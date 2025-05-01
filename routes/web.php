@@ -1,7 +1,12 @@
 <?php
 
+use App\Http\Controllers\authController;
+use Illuminate\Support\Facades\DB as FacadesDB;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/auth/reset_password/{token}', function ($token) {
+    $email = FacadesDB::table('password_reset_tokens')->where('token', $token)->first();
+    return view('emails.forget_password', ['token' => $token, 'email' => $email->email]);
+})->name('password.reset');
+
+Route::post('/auth/reset_password', [authController::class, 'reset_password_view'])->name('reset.password.post');
