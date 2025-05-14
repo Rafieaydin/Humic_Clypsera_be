@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\authController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\RolePremissionController;
+use App\Http\Controllers\DiagnosisController;
+use App\Http\Controllers\JenisKelainanController;
+use App\Http\Controllers\JenisTerapiController;
+use App\Http\Controllers\OperasiController;
+use App\Http\Controllers\PasienController;
 
 Route::post('/auth/login', [authController::class, 'login']);
 Route::post('/auth/register', [authController::class, 'register']);
@@ -38,4 +43,52 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/revoke-permission', [RolePremissionController::class, 'remove_permission']);
         Route::delete('/revoke-role/{role}', [RolePremissionController::class, 'delete_role']);
     });
+
+    Route::prefix('permission')->group(function(){
+        Route::get('/', [RolePremissionController::class, 'index_permission']);
+        Route::post('/create', [RolePremissionController::class, 'create_permission']);
+        Route::delete('/delete/{permission}', [RolePremissionController::class, 'delete_permission']);
+    });
+
+    Route::prefix('diagnosis')->group(function(){
+        Route::get('/', [DiagnosisController::class, 'index']);
+        Route::get('/{id}', [DiagnosisController::class, 'show']);
+        Route::post('/', [DiagnosisController::class, 'store']);
+        Route::patch('/{id}', [DiagnosisController::class, 'update']);
+        Route::delete('/{id}', [DiagnosisController::class, 'destroy']);
+    });
+
+    Route::prefix('jenis-kelainan')->group(function(){
+        Route::get('/', [JenisKelainanController::class, 'index']);
+        Route::get('/{id}', [JenisKelainanController::class, 'show']);
+        Route::post('/', [JenisKelainanController::class, 'store']);
+        Route::patch('/{id}', [JenisKelainanController::class, 'update']);
+        Route::delete('/{id}', [JenisKelainanController::class, 'destroy']);
+    });
+
+    Route::prefix('jenis-terapi')->group(function(){
+        Route::get('/', [JenisTerapiController::class, 'index']);
+        Route::get('/{id}', [JenisTerapiController::class, 'show']);
+        Route::post('/', [JenisTerapiController::class, 'store']);
+        Route::patch('/{id}', [JenisTerapiController::class, 'update']);
+        Route::delete('/{id}', [JenisTerapiController::class, 'destroy']);
+    });
+
+    Route::prefix('operasi')->group(function(){
+        Route::get('/', [OperasiController::class, 'index']);
+        Route::get('/{id}', [OperasiController::class, 'show']);
+        Route::post('/', [OperasiController::class, 'store']);
+        Route::patch('/{id}', [OperasiController::class, 'update']);
+        Route::delete('/{id}', [OperasiController::class, 'destroy']);
+    });
+
+    Route::prefix('pasien')->group(function(){
+        Route::get('/', [PasienController::class, 'index']);
+        Route::get('/{id}', [PasienController::class, 'show']);
+        Route::post('/', [PasienController::class, 'store']);
+        Route::patch('/{id}', [PasienController::class, 'update']);
+        Route::delete('/{id}', [PasienController::class, 'destroy']);
+    });
+
+
 });

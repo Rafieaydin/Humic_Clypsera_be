@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class BeritaController extends Controller
 {
-
     public function index()
     {
         $this->authorize('viewAny', Berita::class);
@@ -89,7 +88,7 @@ class BeritaController extends Controller
             'content' => $request->content ?? $berita->content,
             'sumber' => $request->sumber ?? $berita->sumber,
             'status' => $request->status ?? $berita->status,
-            'user_id' => $request->user_id ?? $berita->user_id,
+            'user_id' => $request->user_id ?? $berita->user_id
         ]);
 
         return response()->json([
@@ -108,4 +107,6 @@ class BeritaController extends Controller
             'message' => 'Berita deleted successfully',
         ]);
     }
+
+
 }

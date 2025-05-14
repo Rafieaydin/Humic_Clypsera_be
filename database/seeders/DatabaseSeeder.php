@@ -18,6 +18,12 @@ class DatabaseSeeder extends Seeder
         PermissionSeeder::class,
         UserSeeder::class,
         BeritaSeeder::class,
+        DiagnosisSeeder::class,
+        JenisTerapileftSeeder::class,
+        JenisKelainanCleftSeeder::class,
+        PasienDataSeeder::class,
+        OperasiDataSeeder::class,
+
         ]);
     }
 }

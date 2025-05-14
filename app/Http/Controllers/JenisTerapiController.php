@@ -1,0 +1,87 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class JenisTerapiController extends Controller
+{
+    public function index(){
+        $jenisTerapi = JenisTerapi::all();
+        if($jenisTerapi->isEmpty()){
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Jenis Terapi Kosong',
+                'data' => null
+            ]);
+        }
+        return response()->json([
+            'status' => true,
+            'message' => 'List Data Jenis Terapi',
+            'data' => JenisTerapi::all()
+        ]);
+    }
+
+    public function show($id){
+        $jenisTerapi = JenisTerapi::find($id);
+        if(!$jenisTerapi){
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Jenis Terapi Tidak Ditemukan',
+                'data' => null
+            ]);
+        }
+        return response()->json([
+            'status' => true,
+            'message' => 'Detail Data Jenis Terapi',
+            'data' => $jenisTerapi
+        ]);
+    }
+
+    public function store(Request $request){
+        $request->validate([
+            'nama_terapi' => 'required',
+            'deskripsi_terapi' => 'required'
+        ]);
+        $jenisTerapi = JenisTerapi::create($request->all());
+        return response()->json([
+            'status' => true,
+            'message' => 'Data Jenis Terapi Berhasil Ditambahkan',
+            'data' => $jenisTerapi
+        ]);
+    }
+
+    public function update(Request $request, $id){
+        $jenisTerapi = JenisTerapi::find($id);
+        if(!$jenisTerapi){
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Jenis Terapi Tidak Ditemukan',
+                'data' => null
+            ]);
+        }
+        $jenisTerapi->update($request->all());
+        return response()->json([
+            'status' => true,
+            'message' => 'Data Jenis Terapi Berhasil Diupdate',
+            'data' => $jenisTerapi
+        ]);
+    }
+
+    public function destroy($id){
+        $jenisTerapi = JenisTerapi::find($id);
+        if(!$jenisTerapi){
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Jenis Terapi Tidak Ditemukan',
+                'data' => null
+            ]);
+        }
+        $jenisTerapi->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'Data Jenis Terapi Berhasil Dihapus',
+            'data' => null
+        ]);
+    }
+}
