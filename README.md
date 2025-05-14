@@ -14,7 +14,7 @@ Please check the our official documentation here [Official Documentation](/)
 
 Clone the repository
 
-    git clone https://github.com/Rafieaydin/Humic_Clypsera_be
+    git clone https://github.com/Rafieaydin/Humic_Clypsera_be.git
 
 Switch to the repo folder
 
@@ -52,7 +52,7 @@ You can now access the server at http://localhost:8000
 
 **TL;DR command list**
 
-    git clone https://github.com/Rafieaydin/Humic_Clypsera_be
+    git clone https://github.com/Rafieaydin/Humic_Clypsera_be.git
     cd Humic_Clypsera_be
     composer install
     cp .env.example .env
