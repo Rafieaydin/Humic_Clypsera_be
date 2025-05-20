@@ -9,7 +9,7 @@ Alternative installation is possible without local dependencies relying on [Dock
 
 ## Our Api Doccumentaion
 
-Please check the our official documentation here [Official Documentation](/)
+Please check the our official documentation here [Official Documentation](https://documenter.getpostman.com/view/32853474/2sB2qZDh7N)
 
 
 Clone the repository
