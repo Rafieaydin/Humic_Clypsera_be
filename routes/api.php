@@ -11,6 +11,7 @@ use App\Http\Controllers\JenisKelainanController;
 use App\Http\Controllers\JenisTerapiController;
 use App\Http\Controllers\OperasiController;
 use App\Http\Controllers\PasienController;
+use App\Http\Controllers\inputDataController;
 
 Route::post('/auth/login', [authController::class, 'login']);
 Route::post('/auth/register', [authController::class, 'register']);
@@ -82,12 +83,14 @@ Route::middleware(['auth:api'])->group(function () {
         Route::delete('/{id}', [OperasiController::class, 'destroy']);
     });
 
+
     Route::prefix('pasien')->group(function(){
-        Route::get('/', [PasienController::class, 'index']);
-        Route::get('/{id}', [PasienController::class, 'show']);
-        Route::post('/', [PasienController::class, 'store']);
-        Route::patch('/{id}', [PasienController::class, 'update']);
-        Route::delete('/{id}', [PasienController::class, 'destroy']);
+
+        Route::get('/show/{id}', [inputDataController::class, 'show']);
+        Route::post('/store', [inputDataController::class, 'store']);
+        Route::patch('/{id}/update', [inputDataController::class, 'update']);
+        Route::delete('/{id}/delete', [inputDataController::class, 'destroy']);
+
     });
 
 

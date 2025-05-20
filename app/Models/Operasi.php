@@ -20,11 +20,12 @@ class Operasi extends Model
         'diagnosis_id',
         'follow_up',
         'operator_id',
+        'operasi_id',
     ];
 
     public function pasien()
     {
-        return $this->belongsTo(User::class, 'pasien_id');
+        return $this->hasOne(Pasien::class, 'operasi_id');
     }
     public function jenisKelainan()
     {

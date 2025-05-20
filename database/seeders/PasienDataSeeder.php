@@ -28,10 +28,7 @@ class PasienDataSeeder extends Seeder
                 'riwayat_kawin_berabat' => 'Tidak ada',
                 'riwayat_terdahulu' => 'Tidak ada',
                 'operator_id' => 1,
-                // 'status' => 'draft',
-                // 'status_changed_id' => 1,
-                // 'status_changed_reason' => 'Data awal',
-                // 'operasi_id' => 1,
+                'operasi_id' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
 

@@ -11,8 +11,9 @@ class Pasien extends Model
     protected $fillable = [
         'nama_pasien',
         'tanggal_lahir',
+        'umur_pasien',
         'jenis_kelamin',
-        'alamat',
+        'alamat_pasien',
         'no_telepon',
         'foto_profil',
         'pasien_anak_ke_berapa',
@@ -22,10 +23,11 @@ class Pasien extends Model
         'riwayat_kawin_berabat',
         'riwayat_terdahulu',
         'operator_id',
+        'operasi_id'
     ];
 
     public function operasi()
     {
-        return $this->hasMany(Operasi::class, 'pasien_id');
+        return $this->belongsTo(Operasi::class, 'operasi_id');
     }
 }

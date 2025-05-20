@@ -13,6 +13,11 @@ class Diagnosis extends Model
         'deskripsi_diagnosis',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     public function operasi()
     {
         return $this->hasMany(Operasi::class, 'diagnosis_id');

@@ -41,7 +41,7 @@ class BeritaPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Berita $berita): Response
+    public function update(User $user): Response
     {
         return $user->can('berita-edit')
         ? Response::allow()
@@ -51,7 +51,7 @@ class BeritaPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Berita $berita): Response
+    public function delete(User $user): Response
     {
         return $user->can('berita-delete')
         ? Response::allow()

@@ -15,7 +15,6 @@ class OperasiDataSeeder extends Seeder
     {
         DB::table('operasi')->insert([
             [
-                'pasien_id' => 1,
                 'diagnosis_id' => 1,
                 'jenis_terapi_id' => 1,
                 'jenis_kelainan_cleft_id' => 1,

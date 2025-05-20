@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Diagnosis;
+use App\Models\JenisKelainan;
+use App\Models\JenisTerampil;
+use App\Models\Operasi;
+use App\Models\Pasien;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class OperasiController extends Controller
@@ -55,17 +61,9 @@ class OperasiController extends Controller
         'operator_id' => 'required|exists:users,id',
         ]);
 
-        // if($request->hasFile('foto_sebelum_operasi')) {
-        //     $request->file('foto_sebelum_operasi')->move(public_path('images'), $request->file('foto_sebelum_operasi')->getClientOriginalName());
-        //     $foto_sebelum_operasi = $request->file('foto_sebelum_operasi')->getClientOriginalName(). '.'.$request->file('foto_sebelum_operasi')->getClientOriginalExtension();
-        // }
-        // if($request->hasFile('foto_setelah_operasi')) {
-        //     $request->file('foto_setelah_operasi')->move(public_path('images'), $request->file('foto_setelah_operasi')->getClientOriginalName());
-        //     $foto_setelah_operasi = $request->file('foto_setelah_operasi')->getClientOriginalName(). '.'.$request->file('foto_setelah_operasi')->getClientOriginalExtension();
-        // }
         $diagnosis = Diagnosis::find($request->diagnosis_id);
-        $jenisKelainanCleft = JenisKelainanCleft::find($request->jenis_kelainan_cleft_id);
-        $jenisTerapi = JenisTerapi::find($request->jenis_terapi_id);
+        $jenisKelainanCleft = JenisKelainan::find($request->jenis_kelainan_cleft_id);
+        $jenisTerapi = JenisTerampil::find($request->jenis_terapi_id);
         $operator = User::find($request->operator_id);
         $pasien = Pasien::find($request->pasien_id);
         if (!$diagnosis || !$jenisKelainanCleft || !$jenisTerapi || !$operator || !$pasien) {
@@ -75,7 +73,10 @@ class OperasiController extends Controller
                 'data' => null
             ]);
         }
+
         if($request->hasFile('foto_sebelum_operasi') && $request->hasFile('foto_setelah_operasi')) {
+            $foto_sebelum_operasi = $request->file('foto_sebelum_operasi')->getClientOriginalName() .'.' . $request->file('foto_sebelum_operasi')->getClientOriginalExtension();
+            $foto_setelah_operasi = $request->file('foto_setelah_operasi')->getClientOriginalName() .'.'.$request->file('foto_setelah_operasi')->getClientOriginalExtension();
             $operasi = Operasi::create([
                 'pasien_id' => $request->pasien_id,
                 'tanggal_operasi' => $request->tanggal_operasi,
@@ -134,6 +135,8 @@ class OperasiController extends Controller
         if ($request->hasFile('foto_sebelum_operasi') && $request->hasFile('foto_setelah_operasi')) {
             $this->unlinkImage($operasi->foto_sebelum_operasi);
             $this->unlinkImage($operasi->foto_setelah_operasi);
+            $foto_sebelum_operasi = $request->file('foto_sebelum_operasi')->getClientOriginalName() .'.' . $request->file('foto_sebelum_operasi')->getClientOriginalExtension();
+            $foto_setelah_operasi = $request->file('foto_setelah_operasi')->getClientOriginalName() .'.'.$request->file('foto_setelah_operasi')->getClientOriginalExtension();
             $operasi->update([
                 'pasien_id' => $request->pasien_id,
                 'tanggal_operasi' => $request->tanggal_operasi,

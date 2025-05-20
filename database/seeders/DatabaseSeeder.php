@@ -21,9 +21,9 @@ class DatabaseSeeder extends Seeder
         DiagnosisSeeder::class,
         JenisTerapileftSeeder::class,
         JenisKelainanCleftSeeder::class,
-        PasienDataSeeder::class,
-        OperasiDataSeeder::class,
 
+        OperasiDataSeeder::class,
+        PasienDataSeeder::class,
         ]);
     }
 }

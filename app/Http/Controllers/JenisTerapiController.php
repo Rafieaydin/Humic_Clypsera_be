@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JenisTerampil as JenisTerapi;
 use Illuminate\Http\Request;
 
 class JenisTerapiController extends Controller

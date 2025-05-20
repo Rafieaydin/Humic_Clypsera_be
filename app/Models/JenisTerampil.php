@@ -13,6 +13,11 @@ class JenisTerampil extends Model
         'deskripsi_terampi',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     public function operasi()
     {
         return $this->hasMany(Operasi::class, 'jenis_terapi_id');
