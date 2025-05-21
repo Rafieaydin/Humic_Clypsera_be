@@ -12,6 +12,9 @@ use App\Http\Controllers\JenisTerapiController;
 use App\Http\Controllers\OperasiController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\inputDataController;
+use App\Http\Controllers\KategoriPermohonanController;
+use App\Http\Controllers\PermohonanController;
+use App\Http\Controllers\UserController;
 
 Route::post('/auth/login', [authController::class, 'login']);
 Route::post('/auth/register', [authController::class, 'register']);
@@ -24,9 +27,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/auth/refresh', [authController::class, 'refresh']);
     Route::post('/auth/logout', [authController::class, 'logout']);
 
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+
 
     Route::prefix('page')->group(function(){
         Route::get('/berita', [BeritaController::class, 'index']);
@@ -90,8 +91,32 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/store', [PasienController::class, 'store']);
         Route::patch('/{id}/update', [PasienController::class, 'update']);
         Route::delete('/{id}/delete', [PasienController::class, 'destroy']);
-
     });
 
+    Route::prefix('user')->group(function(){
+        Route::get('/', [UserController::class, 'index']);
+        Route::get('/find/{id}', [UserController::class, 'find']);
+        Route::get('/search', [UserController::class, 'search']);
+        Route::post('/store', [UserController::class, 'store']);
+        Route::patch('/{id}/update', [UserController::class, 'update']);
+        Route::delete('/{id}/delete', [UserController::class, 'destroy']);
+    });
 
+    Route::prefix('kategori_permohonan')->group(function(){
+        Route::get('/', [KategoriPermohonanController::class, 'index']);
+        Route::get('/find/{id}', [KategoriPermohonanController::class, 'find']);
+        Route::get('/search', [KategoriPermohonanController::class, 'search']);
+        Route::post('/store', [KategoriPermohonanController::class, 'store']);
+        Route::patch('/{id}/update', [KategoriPermohonanController::class, 'update']);
+        Route::delete('/{id}/delete', [KategoriPermohonanController::class, 'destroy']);
+    });
+
+    Route::prefix('permohonan')->group(function(){
+        Route::get('/', [PermohonanController::class, 'index']);
+        Route::get('/find/{id}', [PermohonanController::class, 'find']);
+        Route::get('/search', [PermohonanController::class, 'search']);
+        Route::post('/store', [PermohonanController::class, 'store']);
+        Route::patch('/{id}/update', [PermohonanController::class, 'update']);
+        Route::delete('/{id}/delete', [PermohonanController::class, 'destroy']);
+    });
 });

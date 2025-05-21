@@ -24,6 +24,10 @@ class DatabaseSeeder extends Seeder
 
         OperasiDataSeeder::class,
         PasienDataSeeder::class,
+
+        detail_userSeeder::class,
+        KategoriPermohonanSeeder::class,
+        PermohonanSeeder::class,
         ]);
     }
 }

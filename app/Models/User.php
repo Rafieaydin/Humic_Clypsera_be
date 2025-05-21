@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Contracts\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -54,5 +55,14 @@ class User extends Authenticatable
     public function berita()
     {
         return $this->hasMany(Berita::class, 'user_id');
+    }
+
+    public function detail_user()
+    {
+        return $this->hasOne(detailUser::class, 'user_id');
+    }
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
     }
 }
