@@ -9,6 +9,22 @@ use Illuminate\Support\Str;
 
 class inputDataController extends Controller
 {
+    public function index()
+    {
+        $pasien = Operasi::with(['pasien', 'jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])->get();
+        if ($pasien->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Pasien Kosong',
+                'data' => null
+            ]);
+        }
+        return response()->json([
+            'status' => true,
+            'message' => 'List Data Pasien',
+            'data' => $pasien
+        ]);
+    }
     public function store(Request $request)
     {
         $request->validate([
@@ -86,16 +102,17 @@ class inputDataController extends Controller
 
     public function show($id)
     {
-        $pasien = Pasien::with('operasi')->find($id);
+        $pasien = Operasi::with(['pasien', 'jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])->find($id);
         if (!$pasien) {
             return response()->json([
                 'status' => false,
                 'message' => 'Data Pasien Tidak Ditemukan',
             ], 404);
         }
+
         return response()->json([
             'status' => true,
-            'data' => $pasien->operasi->load(['pasien', 'jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator']),
+            'data' => $pasien,
         ]);
     }
 
@@ -182,7 +199,7 @@ class inputDataController extends Controller
             'follow_up' => $request->follow_up,
             // 'operator_id' => $request->operator_id,
         ]);
-        $operasi = $pasien->operasi->load(['pasien', 'jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator']);
+        $operasi = Operasi::with(['pasien', 'jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])->find($pasien->operasi->id);
 
         return response()->json([
             'status' => true,

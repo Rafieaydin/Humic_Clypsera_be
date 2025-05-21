@@ -77,19 +77,19 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::prefix('operasi')->group(function(){
         Route::get('/', [OperasiController::class, 'index']);
-        Route::get('/{id}', [OperasiController::class, 'show']);
-        Route::post('/', [OperasiController::class, 'store']);
-        Route::patch('/{id}', [OperasiController::class, 'update']);
-        Route::delete('/{id}', [OperasiController::class, 'destroy']);
+        Route::get('/show/{id}', [OperasiController::class, 'show']);
+        Route::post('/store', [OperasiController::class, 'store']);
+        Route::patch('/{id}/update', [OperasiController::class, 'update']);
+        Route::delete('/{id}/delete', [OperasiController::class, 'destroy']);
     });
 
 
     Route::prefix('pasien')->group(function(){
-
-        Route::get('/show/{id}', [inputDataController::class, 'show']);
-        Route::post('/store', [inputDataController::class, 'store']);
-        Route::patch('/{id}/update', [inputDataController::class, 'update']);
-        Route::delete('/{id}/delete', [inputDataController::class, 'destroy']);
+        Route::get('/', [PasienController::class, 'index']);
+        Route::get('/show/{id}', [PasienController::class, 'show']);
+        Route::post('/store', [PasienController::class, 'store']);
+        Route::patch('/{id}/update', [PasienController::class, 'update']);
+        Route::delete('/{id}/delete', [PasienController::class, 'destroy']);
 
     });
 
