@@ -8,6 +8,7 @@ use App\Models\JenisKelainan;
 class JenisKelainanController extends Controller
 {
     public function index(){
+        $this->authorize('viewAny', JenisKelainan::class);
         $jenisKelainan = JenisKelainan::all();
         if($jenisKelainan->isEmpty()){
             return response()->json([
@@ -24,6 +25,7 @@ class JenisKelainanController extends Controller
     }
 
     public function show($id){
+        $this->authorize('view', JenisKelainan::class);
         $jenisKelainan = JenisKelainan::find($id);
         if(!$jenisKelainan){
             return response()->json([
@@ -40,6 +42,7 @@ class JenisKelainanController extends Controller
     }
 
     public function store(Request $request){
+        $this->authorize('create', JenisKelainan::class);
         $request->validate([
             'nama_kelainan' => 'required',
             'deskripsi_kelainan' => 'required'
@@ -53,6 +56,7 @@ class JenisKelainanController extends Controller
     }
 
     public function update(Request $request, $id){
+        $this->authorize('update', JenisKelainan::class);
         $jenisKelainan = JenisKelainan::find($id);
         if(!$jenisKelainan){
             return response()->json([
@@ -70,6 +74,7 @@ class JenisKelainanController extends Controller
     }
 
     public function destroy($id){
+        $this->authorize('delete', JenisKelainan::class);
         $jenisKelainan = JenisKelainan::find($id);
         if(!$jenisKelainan){
             return response()->json([

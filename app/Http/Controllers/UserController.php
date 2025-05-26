@@ -14,6 +14,7 @@ class UserController extends Controller
 {
     public function index()
     {
+        $this->authorize('viewAny', User::class);
         $users = User::with(['detail_user','roles'])->get();
         if ($users->isEmpty()) {
             return response()->json(['message' => 'No data found'], 404);
@@ -25,6 +26,7 @@ class UserController extends Controller
 
     public function show($id)
     {
+        $this->authorize('view', User::class);
         $user = User::with(['detail_user','role'])->find($id);
         if (!$user) {
             return response()->json(['message' => 'Data not found'], 404);
@@ -36,6 +38,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', User::class);
         $request->validate([
             'name' => 'required|string|min:10|max:255',
             'email' => 'required|email|unique:users,email,except,id',
@@ -85,6 +88,7 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
+        $this->authorize('update', User::class);
         $user = User::find($id);
         if (!$user) {
             return response()->json(['message' => 'Data not found'], 404);
@@ -149,6 +153,7 @@ class UserController extends Controller
 
     public function destroy($id)
     {
+        $this->authorize('delete', User::class);
         $user = User::find($id);
         if (!$user) {
             return response()->json(['message' => 'Data not found'], 404);

@@ -11,6 +11,7 @@ class PasienController extends Controller
 {
     public function unlinkImage($image)
     {
+
         $imagePath = public_path('images/' . $image);
         if (file_exists($imagePath)) {
             unlink($imagePath);
@@ -19,6 +20,7 @@ class PasienController extends Controller
 
    public function index()
     {
+        $this->authorize('viewAny', Pasien::class);
         $pasien = Pasien::with(['operasi'=> fn ($query) =>
             $query->with(['jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])
         ])->get();
@@ -37,6 +39,7 @@ class PasienController extends Controller
     }
     public function store(Request $request)
     {
+        $this->authorize('create', Pasien::class);
         $request->validate([
             'nama_pasien' => 'required',
             'tanggal_lahir' => 'required',
@@ -115,6 +118,7 @@ class PasienController extends Controller
 
     public function show($id)
     {
+        $this->authorize('view', Pasien::class);
         $pasien = Pasien::with(['operasi'=> fn ($query) =>
             $query->with(['jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])
         ])->where('id', $id)->get();
@@ -133,6 +137,7 @@ class PasienController extends Controller
 
     public  function update(Request $request, $id)
     {
+        $this->authorize('update', Pasien::class);
         $pasien = Pasien::find($id);
         if (!$pasien) {
             return response()->json([
@@ -227,6 +232,7 @@ class PasienController extends Controller
 
     public function destroy($id)
     {
+        $this->authorize('delete', Pasien::class);
         $pasien = Pasien::find($id);
         $pasien->operasi()->delete();
         if (!$pasien) {

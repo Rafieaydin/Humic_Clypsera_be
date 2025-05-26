@@ -7,6 +7,7 @@ use App\Models\Diagnosis;
 class DiagnosisController extends Controller
 {
     public function index(){
+        $this->authorize('viewAny', Diagnosis::class);
         $diagnosis = Diagnosis::all();
         if($diagnosis->isEmpty()){
             return response()->json([
@@ -23,6 +24,7 @@ class DiagnosisController extends Controller
     }
 
     public function show($id){
+        $this->authorize('view', Diagnosis::class);
         $diagnosis = Diagnosis::find($id);
         if(!$diagnosis){
             return response()->json([
@@ -39,6 +41,7 @@ class DiagnosisController extends Controller
     }
 
     public function store(Request $request){
+        $this->authorize('create', Diagnosis::class);
         $request->validate([
             'nama_diagnosis' => 'required',
             'deskripsi_diagnosis' => 'required'
@@ -52,6 +55,7 @@ class DiagnosisController extends Controller
     }
 
     public function update(Request $request, $id){
+        $this->authorize('update', Diagnosis::class);
         $diagnosis = Diagnosis::find($id);
         if(!$diagnosis){
             return response()->json([
@@ -73,6 +77,7 @@ class DiagnosisController extends Controller
     }
 
     public function destroy($id){
+        $this->authorize('delete', Diagnosis::class);
         $diagnosis = Diagnosis::find($id);
         if(!$diagnosis){
             return response()->json([

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Pasien;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -13,26 +14,31 @@ class PasienDataSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('pasien')->insert([
-            [
-                'nama_pasien' => 'John Doe',
-                'tanggal_lahir' => '2020-01-01',
-                'umur_pasien' => 3,
-                'jenis_kelamin' => 'L',
-                'alamat_pasien' => 'Jl. Kebon Jeruk No. 1, Jakarta',
-                'no_telepon' => '081234567890',
-                'pasien_anak_ke_berapa' => 1,
-                'kelainan_kotigental' => 'Tidak ada',
-                'riwayat_kehamilan' => 'Sehat',
-                'riwayat_keluarga_pasien' => 'Tidak ada',
-                'riwayat_kawin_berabat' => 'Tidak ada',
-                'riwayat_terdahulu' => 'Tidak ada',
-                'operator_id' => 1,
-                'operasi_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+        $role = \Spatie\Permission\Models\Role::where('guard_name', 'api')->where('name', 'operator')->first();
+        $operator_id = \App\Models\User::whereHas('roles', function ($query) use ($role) {
+            $query->where('name', $role->name);
+        })->select('id')->get()->pluck('id')->toArray();
+        $operasi_id = \App\Models\Operasi::select('id')->get()->pluck('id')->toArray(); // luck sama select sama
+        $faker = \Faker\Factory::create();
+        for ($i=1; $i <= 100 ; $i++) {
+            Pasien::create([
+                'nama_pasien' => 'Pasien ' . $i,
+                'tanggal_lahir' => $faker->dateTimeBetween('-20 years', '-10 year')->format('Y-m-d'),
+                'umur_pasien' => $faker->numberBetween(10,20),
+                'jenis_kelamin' => $faker->randomElement(['L', 'P']),
+                'alamat_pasien' => $faker->address('id_ID'),
+                'no_telepon' => "62".$faker->unique()->numerify('##########'),
+                'pasien_anak_ke_berapa' => rand(1, 3),
+                'kelainan_kotigental' => $faker->randomElement(['Tidak ada', 'Ada']),
+                'riwayat_kehamilan' => $faker->randomElement(['Tidak ada', 'Ada']),
+                'riwayat_keluarga_pasien' => $faker->randomElement(['Tidak ada', 'Ada']),
+                'riwayat_kawin_berabat' => $faker->randomElement(['Tidak ada', 'Ada']),
+                'riwayat_terdahulu' => $faker->randomElement(['Tidak ada', 'Ada']),
+                'operator_id' => $faker->randomElement($operator_id),
+                'operasi_id' => $i,
+            ]);
+        }
 
-            ]
-        ]);
+
     }
 }

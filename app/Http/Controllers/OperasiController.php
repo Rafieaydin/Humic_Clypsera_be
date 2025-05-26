@@ -14,6 +14,7 @@ class OperasiController extends Controller
 {
     public function index()
     {
+        $this->authorize('viewAny', Operasi::class);
         $pasien = Operasi::with(['pasien', 'jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])->get();
         if ($pasien->isEmpty()) {
             return response()->json([
@@ -30,6 +31,7 @@ class OperasiController extends Controller
     }
     public function store(Request $request)
     {
+        $this->authorize('create', Operasi::class);
         $request->validate([
             'nama_pasien' => 'required',
             'tanggal_lahir' => 'required',
@@ -105,6 +107,7 @@ class OperasiController extends Controller
 
     public function show($id)
     {
+        $this->authorize('view', Operasi::class);
         $pasien = Operasi::with(['pasien', 'jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])->find($id);
         if (!$pasien) {
             return response()->json([
@@ -121,6 +124,7 @@ class OperasiController extends Controller
 
     public  function update(Request $request, $id)
     {
+        $this->authorize('update', Operasi::class);
         $operasi = Operasi::with(['pasien', 'jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])->find($id);
         if (!$operasi) {
             return response()->json([
@@ -221,6 +225,7 @@ class OperasiController extends Controller
 
     public function destroy($id)
     {
+        $this->authorize('delete', Operasi::class);
         $operasi = Operasi::find($id);
         $operasi->pasien()->delete();
         if (!$operasi) {

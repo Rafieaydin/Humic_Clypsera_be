@@ -9,6 +9,7 @@ class KategoriPermohonanController extends Controller
 {
     public function index()
     {
+        $this->authorize('viewAny', kategoriPermohonan::class);
         $kategoriPeromohonan = kategoriPermohonan::with('permohonan')->get();
         if ($kategoriPeromohonan->isEmpty()) {
             return response()->json(['message' => 'No data found'], 404);
@@ -20,6 +21,7 @@ class KategoriPermohonanController extends Controller
 
     public function find($id)
     {
+        $this->authorize('view', kategoriPermohonan::class);
         $kategoriPermohonan = kategoriPermohonan::with('permohonan')->find($id);
         if (!$kategoriPermohonan) {
             return response()->json(['message' => 'Data not found'], 404);
@@ -31,6 +33,7 @@ class KategoriPermohonanController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', kategoriPermohonan::class);
         $request->validate([
             'kategori' => 'required|string|min:10|max:255',
         ]);
@@ -45,6 +48,7 @@ class KategoriPermohonanController extends Controller
 
     public function update(Request $request, $id)
     {
+        $this->authorize('update', kategoriPermohonan::class);
         $kategoriPermohonan = kategoriPermohonan::find($id);
         if (!$kategoriPermohonan) {
             return response()->json(['message' => 'Data not found'], 404);
@@ -63,6 +67,7 @@ class KategoriPermohonanController extends Controller
     }
     public function destroy($id)
     {
+        $this->authorize('delete', kategoriPermohonan::class);
         $kategoriPermohonan = kategoriPermohonan::find($id);
         if (!$kategoriPermohonan) {
             return response()->json(['message' => 'Data not found'], 404);
