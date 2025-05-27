@@ -4,40 +4,41 @@ namespace App\Policies;
 
 use App\Models\JenisTerampil;
 use Illuminate\Auth\Access\Response;
+use App\Models\User;
 
 class JenisTerapiPolicy
 {
-    public function viewAny(JenisTerampil $jenis_terampil): Response
+    public function viewAny(User $User): Response
     {
-        return $jenis_terampil->can('jenis-terapi-list')
+        return $User->can('jenis-terapi-list')
         ? Response::allow()
         : Response::deny('You do not have permission to view any jenis terapi list.');
     }
 
-    public function view(JenisTerampil $jenis_terampil): Response
+    public function view(User $User): Response
     {
-        return $jenis_terampil->can('jenis-terapi-show')
+        return $User->can('jenis-terapi-show')
         ? Response::allow()
         : Response::deny('You do not have permission to view this jenis terapi.');
     }
 
-    public function create(JenisTerampil $jenis_terampil): Response
+    public function create(User $User): Response
     {
-        return $jenis_terampil->can('jenis-terapi-create')
+        return $User->can('jenis-terapi-create')
         ? Response::allow()
         : Response::deny('You do not have permission to create jenis terapi.');
     }
 
-    public function update(JenisTerampil $jenis_terampil): Response
+    public function update(User $User): Response
     {
-        return $jenis_terampil->can('jenis-terapi-edit')
+        return $User->can('jenis-terapi-edit')
         ? Response::allow()
         : Response::deny('You do not have permission to update this jenis terapi.');
     }
 
-    public function delete(JenisTerampil $jenis_terampil): Response
+    public function delete(User $User): Response
     {
-        return $jenis_terampil->can('jenis-terapi-delete')
+        return $User->can('jenis-terapi-delete')
         ? Response::allow()
         : Response::deny('You do not have permission to delete this jenis terapi.');
     }
