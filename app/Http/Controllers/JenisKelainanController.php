@@ -87,7 +87,6 @@ class JenisKelainanController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Data Jenis Kelainan Berhasil Dihapus',
-            'data' => null
         ]);
     }
     // public function getOperasi($id){

@@ -3,41 +3,42 @@
 namespace App\Policies;
 
 use App\Models\Pasien;
+use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
 class PasienPolicy
 {
-    public function viewAny(Pasien $pasien): Response
+    public function viewAny(User $user): Response
     {
-        return $pasien->can('pasien-list')
+        return $user->can('pasien-list')
         ? Response::allow()
         : Response::deny('You do not have permission to view any endpoint pasien list.');
     }
 
-    public function view(Pasien $pasien): Response
+    public function view(User $user): Response
     {
-        return $pasien->can('pasien-show')
+        return $user->can('pasien-show')
         ? Response::allow()
         : Response::deny('You do not have permission to view this endpoint pasien.');
     }
 
-    public function create(Pasien $pasien): Response
+    public function create(User $user): Response
     {
-        return $pasien->can('pasien-create')
+        return $user->can('pasien-create')
         ? Response::allow()
         : Response::deny('You do not have permission to create endpoint pasien.');
     }
 
-    public function update(Pasien $pasien): Response
+    public function update(User $user): Response
     {
-        return $pasien->can('pasien-edit')
+        return $user->can('pasien-edit')
         ? Response::allow()
         : Response::deny('You do not have permission to update this endpoint pasien.');
     }
 
-    public function delete(Pasien $pasien): Response
+    public function delete(User $user): Response
     {
-        return $pasien->can('pasien-delete')
+        return $user->can('pasien-delete')
         ? Response::allow()
         : Response::deny('You do not have permission to delete this endpoint pasien.');
     }

@@ -8,14 +8,14 @@ use App\Models\User;
 
 class DiagnosisPolicy
 {
-    public function viewAny(Diagnosis $diagnosis): Response
+    public function viewAny(User $user): Response
     {
-        return $diagnosis->can('diagnosis-list')
+        return $user->can('diagnosis-list')
         ? Response::allow()
         : Response::deny('You do not have permission to view any diagnosis.');
     }
 
-    public function view(User $user, Diagnosis $diagnosis): Response
+    public function view(User $user): Response
     {
         return $user->can('diagnosis-show')
         ? Response::allow()

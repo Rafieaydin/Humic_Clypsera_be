@@ -90,7 +90,6 @@ class DiagnosisController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Data Diagnosis Berhasil Dihapus',
-            'data' => null
         ]);
     }
 
