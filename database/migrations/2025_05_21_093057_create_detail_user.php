@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('detail_user', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('nik', 16)->unique();
+            $table->string('foto')->default(app()->make('url')->to('/images/profile/default.png'));
+            $table->string('nik', 16)->nullable();
             $table->string('pekerjaan', 50);
             $table->date('tanggal_lahir');
             $table->integer('umur');

@@ -23,11 +23,10 @@ class Pasien extends Model
         'riwayat_kawin_berabat',
         'riwayat_terdahulu',
         'operator_id',
-        'operasi_id'
     ];
 
     public function operasi()
     {
-        return $this->belongsTo(Operasi::class, 'operasi_id');
+        return $this->hasOne(Operasi::class, 'pasien_id');
     }
 }

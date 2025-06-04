@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('riwayat_terdahulu', 100);
             //  $table->foreignId('operator_id')->constrained('users','costomid')->onDelete('cascade');
             $table->foreignId('operator_id')->constrained('users')->onDelete('cascade');
-            // $table->string('status', 20)->default('draft');
+            // $table->string('status', 20)->default('Pending');
             // $table->foreignId('status_changed_id')->constrained('users')->onDelete('cascade');
             // $table->string('status_changed_reason', 100)->nullable();
             $table->timestamps();

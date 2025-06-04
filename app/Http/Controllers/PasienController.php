@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pasien;
 use App\Models\Operasi;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class PasienController extends Controller
@@ -12,13 +14,13 @@ class PasienController extends Controller
     public function unlinkImage($image)
     {
 
-        $imagePath = public_path('images/' . $image);
+        $imagePath = public_path($image);
         if (file_exists($imagePath)) {
             unlink($imagePath);
         }
     }
 
-   public function index()
+    public function index()
     {
         $this->authorize('viewAny', Pasien::class);
         $pasien = Pasien::with(['operasi'=> fn ($query) =>
@@ -75,19 +77,6 @@ class PasienController extends Controller
             $request->file('foto_setelah_operasi')->move('images/data_pasien/',$foto_setelah_operasi);
 
         }
-
-        $operasi = Operasi::create([
-            'tanggal_operasi' => $request->tanggal_operasi,
-            'tehnik_operasi' => $request->tehnik_operasi,
-            'lokasi_operasi' => $request->lokasi_operasi,
-            'foto_sebelum_operasi' => app()->make('url')->to('/images/data_pasien/' . $foto_sebelum_operasi),
-            'foto_setelah_operasi' => app()->make('url')->to('/images/data_pasien/' . $foto_setelah_operasi),
-            'jenis_kelainan_cleft_id' => $request->jenis_kelainan_cleft_id,
-            'jenis_terapi_id' => $request->jenis_terapi_id,
-            'diagnosis_id' => $request->diagnosis_id,
-            'follow_up' => $request->follow_up,
-            'operator_id' => $request->operator_id,
-        ]);
         $pasien = Pasien::create([
             'nama_pasien' => $request->nama_pasien,
             'tanggal_lahir' => $request->tanggal_lahir,
@@ -102,8 +91,21 @@ class PasienController extends Controller
             'riwayat_kawin_berabat' => $request->riwayat_kawin_berabat,
             'riwayat_terdahulu' => $request->riwayat_terdahulu,
             'operator_id' => $request->operator_id,
-            'operasi_id' => $operasi->id,
         ]);
+        $operasi = Operasi::create([
+            'tanggal_operasi' => $request->tanggal_operasi,
+            'tehnik_operasi' => $request->tehnik_operasi,
+            'lokasi_operasi' => $request->lokasi_operasi,
+            'foto_sebelum_operasi' => '/images/data_pasien/' . $foto_sebelum_operasi,
+            'foto_setelah_operasi' => '/images/data_pasien/' . $foto_setelah_operasi,
+            'jenis_kelainan_cleft_id' => $request->jenis_kelainan_cleft_id,
+            'jenis_terapi_id' => $request->jenis_terapi_id,
+            'diagnosis_id' => $request->diagnosis_id,
+            'follow_up' => $request->follow_up,
+            'operator_id' => $request->operator_id,
+            'pasien_id' => $pasien->id,
+        ]);
+
 
         $pasien = Pasien::with(['operasi'=> fn ($query) =>
             $query->with(['jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])
@@ -171,25 +173,21 @@ class PasienController extends Controller
             // 'operator_id' => 'required|exists:users,id',
         ]);
 
-        if($request->hasFile('foto_sebelum_operasi') && $request->file('foto_setelah_operasi')->isValid()){
-            if($pasien->operasi->foto_sebelum_operasi){
-                $oldImage = public_path('images/data_pasien/' . basename($pasien->operasi->foto_sebelum_operasi));
-                if (file_exists($oldImage)) {
-                    unlink($oldImage);
+            if($request->hasFile('foto_sebelum_operasi') && $request->file('foto_sebelum_operasi')->isValid()){
+                if ($pasien->operasi->foto_sebelum_operasi !== '/images/data_pasien/default.png') {
+                    $this->unlinkImage($pasien->operasi->foto_sebelum_operasi);
                 }
+                $foto_sebelum_operasi = Str::random(10).'-'.$request->lokasi_operasi.'-'.$request->nama_pasien.'sebelum_operasi'.'.'.$request->file('foto_sebelum_operasi')->getClientOriginalExtension();
+                $request->file('foto_sebelum_operasi')->move('images/data_pasien/',$foto_sebelum_operasi);
             }
-            $foto_sebelum_operasi = Str::random(10).'-'.$request->lokasi_operasi.'-'.$request->nama_pasien.'sebelum_operasi'.'.'.$request->file('foto_sebelum_operasi')->getClientOriginalExtension();
-            $request->file('foto_sebelum_operasi')->move('images/data_pasien/',$foto_sebelum_operasi);
 
-            if($pasien->operasi->foto_setelah_operasi){
-                $oldImage = public_path('images/data_pasien/' . basename($pasien->operasi->foto_setelah_operasi));
-                if (file_exists($oldImage)) {
-                    unlink($oldImage);
+            if($request->hasFile('foto_setelah_operasi') && $request->file('foto_setelah_operasi')->isValid()){
+                if ($pasien->operasi->foto_setelah_operasi !== '/images/data_pasien/default.png') {
+                    $this->unlinkImage($pasien->operasi->foto_setelah_operasi);
                 }
+                $foto_setelah_operasi = Str::random(10).'-'.$request->lokasi_operasi.'-'.$request->nama_pasien.'setelah_operasi'.'.'.$request->file('foto_setelah_operasi')->getClientOriginalExtension();
+                $request->file('foto_setelah_operasi')->move('images/data_pasien/',$foto_setelah_operasi);
             }
-            $foto_setelah_operasi = Str::random(10).'-'.$request->lokasi_operasi.'-'.$request->nama_pasien.'setelah_operasi'.'.'.$request->file('foto_setelah_operasi')->getClientOriginalExtension();
-            $request->file('foto_setelah_operasi')->move('images/data_pasien/',$foto_setelah_operasi);
-        }
 
         $pasien->update([
             'nama_pasien' => $request->nama_pasien,
@@ -211,8 +209,8 @@ class PasienController extends Controller
             'tanggal_operasi' => $request->tanggal_operasi,
             'tehnik_operasi' => $request->tehnik_operasi,
             'lokasi_operasi' => $request->lokasi_operasi,
-            'foto_sebelum_operasi' => app()->make('url')->to('/images/data_pasien/' . $foto_sebelum_operasi),
-            'foto_setelah_operasi' => app()->make('url')->to('/images/data_pasien/' . $foto_setelah_operasi),
+            'foto_sebelum_operasi' => '/images/data_pasien/' . $foto_sebelum_operasi,
+            'foto_setelah_operasi' => '/images/data_pasien/' . $foto_setelah_operasi,
             'jenis_kelainan_cleft_id' => $request->jenis_kelainan_cleft_id,
             'jenis_terapi_id' => $request->jenis_terapi_id,
             'diagnosis_id' => $request->diagnosis_id,
@@ -233,17 +231,21 @@ class PasienController extends Controller
     public function destroy($id)
     {
         $this->authorize('delete', Pasien::class);
-        $pasien = Pasien::find($id);
-        $pasien->operasi()->delete();
+        $pasien = Pasien::where('id', $id)->with('operasi')->first();
         if (!$pasien) {
             return response()->json([
                 'status' => false,
                 'message' => 'Data Pasien Tidak Ditemukan',
             ], 404);
         }
-
+        if ($pasien->operasi->foto_sebelum_operasi !== '/images/data_pasien/default.png') {
+            $this->unlinkImage($pasien->operasi->foto_sebelum_operasi);
+        }
+        if ($pasien->operasi->foto_setelah_operasi !== '/images/data_pasien/default.png') {
+            $this->unlinkImage($pasien->operasi->foto_setelah_operasi);
+        }
+        $pasien->operasi()->delete();
         $pasien->delete();
-
         return response()->json([
             'status' => true,
             'message' => 'Data Pasien Berhasil Dihapus',
@@ -262,6 +264,77 @@ class PasienController extends Controller
         return response()->json([
             'status' => true,
             'data' => $pasien,
+        ]);
+    }
+
+    public function search(Request $request)
+    {
+        $validate = Validator::make($request->query(), [
+            'nama_pasien' => 'string|max:255',
+            'umur_pasien' => 'integer|min:0',
+            'jenis_kelamin' => 'in:L,P',
+            'no_telepon' => 'string|max:15',
+            'tanggal_lahir' => 'date',
+            'tanggal_operasi' => 'date',
+            'tehnik_operasi' => 'string|max:255',
+            'lokasi_operasi' => 'string|max:255',
+        ],
+        );
+        if ($validate->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'invalid paramter',
+                'errors' => $validate->errors(),
+            ], 422);
+        }
+        $queryList = ['nama_pasien', 'tanggal_lahir', 'jenis_kelamin', 'umur_pasien','no_telepon','tanggal_operasi', 'lokasi_operasi','tehnik_operasi'];
+        $operationQuery = ['tanggal_operasi', 'lokasi_operasi','tehnik_operasi'];
+        $query = $request->query();
+        // cek query nya harus sama
+        $pasien = Pasien::query();
+        foreach ($query as $key => $field) {
+            if (!in_array($key, $queryList)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid query parameter: ' . $key,
+                ], 422);
+            }
+            if(in_array($key, $operationQuery)){
+                $pasien->whereHas('operasi', function ($query) use ($key, $field) {
+
+                    $query->where($key, 'like', '%' . $field . '%');
+                });
+            }else{
+                if($key =='tanggal_lahir'){
+                    try {
+                        $field = Carbon::parse($field)->format('Y-m-d');
+                        $pasien->whereDate($key, $field);
+                    } catch (\Exception $e) {
+                        return response()->json([
+                            'status' => false,
+                            'message' => 'Invalid date format for tanggal_lahir',
+                        ], 422);
+                        }
+                }else{
+                    $pasien->where($key, 'like', '%' . $field . '%');
+                }
+            }
+        }
+        $pasien = $pasien->with(['operasi'=> fn ($query) =>
+            $query->with(['jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])
+        ])->get();
+
+        if ($pasien->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Pasien Tidak Ditemukan',
+                'data' => null
+            ], 404);
+        }
+        return response()->json([
+            'status' => true,
+            'message' => 'Data Pasien Ditemukan',
+            'data' => $pasien
         ]);
     }
 

@@ -5,13 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\detailUser;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Contracts\Role;
 use Spatie\Permission\Models\Role as ModelsRole;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
+    public function unlinkImage($image)
+    {
+        $imagePath = public_path($image);
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+    }
     public function index()
     {
         $this->authorize('viewAny', User::class);
@@ -44,7 +53,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,except,id',
             'password' => 'required|string|min:10|max:255',
             'password_confirmation' => 'required|string|min:10|max:255',
-            'nik' => 'required|string|min:10|max:255',
+            'nik' => 'required|string|min:10|max:255|unique:detail_user,nik',
             'pekerjaan' => 'required|string|min:10|max:255',
             'tanggal_lahir' => 'required|date',
             'umur' => 'required|integer',
@@ -52,6 +61,7 @@ class UserController extends Controller
             'jenis_kelamin' => 'required|in:L,P',
             'no_telepon' => 'required|string|min:10|max:255',
             'role_id' => 'required|integer',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         $role = null;
         if ($request->filled('role_id')) {
@@ -69,6 +79,7 @@ class UserController extends Controller
             $user->assignRole($role);
         }
 
+
         detailUser::create([
             'user_id' => $user->id,
             'nik' => $request->nik,
@@ -79,6 +90,18 @@ class UserController extends Controller
             'jenis_kelamin' => $request->jenis_kelamin,
             'no_telepon' => $request->no_telepon,
         ]);
+
+        if($request->hasFile('photo')) {
+            $user_name = Str::random(10) . '-' . $user->name . '-' . $request->file('photo')->getClientOriginalExtension();
+            $photoPath = $request->file('photo')->move('/images/profile', $user_name);
+            $user->detail_user()->update([
+                'foto' => '/images/profile', $user_name,
+            ]);
+        }else{
+            $user->detail_user()->update([
+                'foto' => '/images/profile/default.png',
+            ]);
+        }
 
         return response()->json([
             'message' => 'User created successfully',
@@ -96,9 +119,9 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|min:10|max:255',
-            'email' => 'required|email|unique:users,email,except,id',
+            'email' => 'required|email|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:10|max:255',
-            'nik' => 'required|string|min:10|max:255',
+            'nik' => 'required|string|min:10|max:255|unique:detail_user,nik,' . $user->id,
             'pekerjaan' => 'required|string|min:10|max:255',
             'tanggal_lahir' => 'required|date',
             'umur' => 'required|integer',
@@ -135,6 +158,19 @@ class UserController extends Controller
             $user->update(['password' => Hash::make($request->password)]);
         }
 
+        if($request->hasFile('photo')) {
+            $this->unlinkImage($user->detail_user->foto ?? '');
+            $user_name = Str::random(10) . '-' . $user->name . '-' . $request->file('photo')->getClientOriginalExtension();
+            $photoPath = $request->file('photo')->move('/images/profile', $user_name);
+            $user->detail_user()->update([
+                'foto' => '/images/profile', $user_name,
+            ]);
+        }else{
+            $user->detail_user()->update([
+                'foto' => $user->detail_user->foto ?? '/images/profile/default.png',
+            ]);
+        }
+
         $user->detail_user()->update([
             'nik' => $request->nik,
             'pekerjaan' => $request->pekerjaan,
@@ -154,11 +190,14 @@ class UserController extends Controller
     public function destroy($id)
     {
         $this->authorize('delete', User::class);
-        $user = User::find($id);
+        $user = User::where('id', $id)->with(['detail_user'])->first();
         if (!$user) {
             return response()->json(['message' => 'Data not found'], 404);
         }
-
+        if($user->detail_user->foto != '/images/profile/default.png'){
+            $this->unlinkImage($user->detail_user->foto);
+        }
+        $user->detail_user()->delete();
         $user->delete();
 
         return response()->json([
@@ -210,8 +249,6 @@ class UserController extends Controller
             }else{
                 $userQuery->where($key, 'LIKE', "%{$value}%");
             }
-
-
         }
         $users = $userQuery->get();
         return response()->json([

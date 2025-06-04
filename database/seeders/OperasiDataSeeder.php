@@ -18,7 +18,7 @@ class OperasiDataSeeder extends Seeder
         $operator_id = \App\Models\User::whereHas('roles', function ($query) use ($role) {
             $query->where('name', $role->name);
         })->select('id')->get()->pluck('id')->toArray();
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 1; $i <= 100; $i++) {
             DB::table('operasi')->insert([
                 [
                     'diagnosis_id' => 1,
@@ -35,8 +35,8 @@ class OperasiDataSeeder extends Seeder
                         'RS Sumbing Indonesia',
                         'RS Cleft Center'
                     ]),
-                    'foto_sebelum_operasi' => 'foto_sebelum_operasi.jpg',
-                    'foto_setelah_operasi' => 'foto_setelah_operasi.jpg',
+                    'foto_sebelum_operasi' => '/images/data_pasien/default.png',
+                    'foto_setelah_operasi' => '/images/data_pasien/default.png',
                     'follow_up' => $faker->randomElement([
                         'Follow up 1 bulan setelah operasi',
                         'Follow up 3 bulan setelah operasi',
@@ -45,6 +45,7 @@ class OperasiDataSeeder extends Seeder
                     'operator_id' => $faker->randomElement($operator_id),
                     'created_at' => now(),
                     'updated_at' => now(),
+                    'pasien_id' => $i
                 ]
             ]);
         }

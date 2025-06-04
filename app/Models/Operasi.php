@@ -25,7 +25,7 @@ class Operasi extends Model
 
     public function pasien()
     {
-        return $this->hasOne(Pasien::class, 'operasi_id');
+        return $this->belongsTo(Pasien::class, 'pasien_id');
     }
     public function jenisKelainan()
     {

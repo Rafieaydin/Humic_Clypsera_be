@@ -21,13 +21,13 @@ class DatabaseSeeder extends Seeder
         DiagnosisSeeder::class,
         JenisTerapileftSeeder::class,
         JenisKelainanCleftSeeder::class,
-
-        OperasiDataSeeder::class,
         PasienDataSeeder::class,
-
+        OperasiDataSeeder::class,
         detail_userSeeder::class,
         KategoriPermohonanSeeder::class,
         PermohonanSeeder::class,
+        YayasanSeeder::class,
+        RatingYayasanSeeder::class,
         ]);
     }
 }

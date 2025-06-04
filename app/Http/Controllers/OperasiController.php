@@ -7,11 +7,20 @@ use App\Models\JenisKelainan;
 use App\Models\JenisTerampil;
 use App\Models\Operasi;
 use App\Models\Pasien;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class OperasiController extends Controller
 {
+    public function unlinkImage($image)
+    {
+        $imagePath = public_path($image);
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+    }
     public function index()
     {
         $this->authorize('viewAny', Operasi::class);
@@ -68,18 +77,6 @@ class OperasiController extends Controller
 
         }
 
-        $operasi = Operasi::create([
-            'tanggal_operasi' => $request->tanggal_operasi,
-            'tehnik_operasi' => $request->tehnik_operasi,
-            'lokasi_operasi' => $request->lokasi_operasi,
-            'foto_sebelum_operasi' => app()->make('url')->to('/images/data_pasien/' . $foto_sebelum_operasi),
-            'foto_setelah_operasi' => app()->make('url')->to('/images/data_pasien/' . $foto_setelah_operasi),
-            'jenis_kelainan_cleft_id' => $request->jenis_kelainan_cleft_id,
-            'jenis_terapi_id' => $request->jenis_terapi_id,
-            'diagnosis_id' => $request->diagnosis_id,
-            'follow_up' => $request->follow_up,
-            'operator_id' => $request->operator_id,
-        ]);
         $pasien = Pasien::create([
             'nama_pasien' => $request->nama_pasien,
             'tanggal_lahir' => $request->tanggal_lahir,
@@ -94,8 +91,22 @@ class OperasiController extends Controller
             'riwayat_kawin_berabat' => $request->riwayat_kawin_berabat,
             'riwayat_terdahulu' => $request->riwayat_terdahulu,
             'operator_id' => $request->operator_id,
-            'operasi_id' => $operasi->id,
         ]);
+
+        $operasi = Operasi::create([
+            'tanggal_operasi' => $request->tanggal_operasi,
+            'tehnik_operasi' => $request->tehnik_operasi,
+            'lokasi_operasi' => $request->lokasi_operasi,
+            'foto_sebelum_operasi' => '/images/data_pasien/' . $foto_sebelum_operasi,
+            'foto_setelah_operasi' => '/images/data_pasien/' . $foto_setelah_operasi,
+            'jenis_kelainan_cleft_id' => $request->jenis_kelainan_cleft_id,
+            'jenis_terapi_id' => $request->jenis_terapi_id,
+            'diagnosis_id' => $request->diagnosis_id,
+            'follow_up' => $request->follow_up,
+            'operator_id' => $request->operator_id,
+            'pasien_id' => $pasien->id,
+        ]);
+
 
 
         return response()->json([
@@ -166,25 +177,21 @@ class OperasiController extends Controller
             ], 404);
         }
 
-        if($request->hasFile('foto_sebelum_operasi') && $request->file('foto_setelah_operasi')->isValid()){
-            if($pasien->operasi->foto_sebelum_operasi){
-                $oldImage = public_path('images/data_pasien/' . basename($pasien->operasi->foto_sebelum_operasi));
-                if (file_exists($oldImage)) {
-                    unlink($oldImage);
+            if($request->hasFile('foto_sebelum_operasi') && $request->file('foto_sebelum_operasi')->isValid()){
+                if($operasi->foto_sebelum_operasi !== '/images/data_pasien/default.png'){
+                    $this->unlinkImage($operasi->foto_sebelum_operasi);
                 }
+                $foto_sebelum_operasi = Str::random(10).'-'.$request->lokasi_operasi.'-'.$request->nama_pasien.'sebelum_operasi'.'.'.$request->file('foto_sebelum_operasi')->getClientOriginalExtension();
+                $request->file('foto_sebelum_operasi')->move('images/data_pasien/',$foto_sebelum_operasi);
             }
-            $foto_sebelum_operasi = Str::random(10).'-'.$request->lokasi_operasi.'-'.$request->nama_pasien.'sebelum_operasi'.'.'.$request->file('foto_sebelum_operasi')->getClientOriginalExtension();
-            $request->file('foto_sebelum_operasi')->move('images/data_pasien/',$foto_sebelum_operasi);
 
-            if($pasien->operasi->foto_setelah_operasi){
-                $oldImage = public_path('images/data_pasien/' . basename($pasien->operasi->foto_setelah_operasi));
-                if (file_exists($oldImage)) {
-                    unlink($oldImage);
+            if($request->hasFile('foto_setelah_operasi') && $request->file('foto_setelah_operasi')->isValid()){
+                if($operasi->foto_setelah_operasi !== '/images/data_pasien/default.png'){
+                    $this->unlinkImage($operasi->foto_setelah_operasi);
                 }
+                $foto_setelah_operasi = Str::random(10).'-'.$request->lokasi_operasi.'-'.$request->nama_pasien.'setelah_operasi'.'.'.$request->file('foto_setelah_operasi')->getClientOriginalExtension();
+                $request->file('foto_setelah_operasi')->move('images/data_pasien/',$foto_setelah_operasi);
             }
-            $foto_setelah_operasi = Str::random(10).'-'.$request->lokasi_operasi.'-'.$request->nama_pasien.'setelah_operasi'.'.'.$request->file('foto_setelah_operasi')->getClientOriginalExtension();
-            $request->file('foto_setelah_operasi')->move('images/data_pasien/',$foto_setelah_operasi);
-        }
 
         $pasien->update([
             'nama_pasien' => $request->nama_pasien,
@@ -206,8 +213,8 @@ class OperasiController extends Controller
             'tanggal_operasi' => $request->tanggal_operasi,
             'tehnik_operasi' => $request->tehnik_operasi,
             'lokasi_operasi' => $request->lokasi_operasi,
-            'foto_sebelum_operasi' => app()->make('url')->to('/images/data_pasien/' . $foto_sebelum_operasi),
-            'foto_setelah_operasi' => app()->make('url')->to('/images/data_pasien/' . $foto_setelah_operasi),
+            'foto_sebelum_operasi' => '/images/data_pasien/' . $foto_sebelum_operasi,
+            'foto_setelah_operasi' => '/images/data_pasien/' . $foto_setelah_operasi,
             'jenis_kelainan_cleft_id' => $request->jenis_kelainan_cleft_id,
             'jenis_terapi_id' => $request->jenis_terapi_id,
             'diagnosis_id' => $request->diagnosis_id,
@@ -226,8 +233,7 @@ class OperasiController extends Controller
     public function destroy($id)
     {
         $this->authorize('delete', Operasi::class);
-        $operasi = Operasi::find($id);
-        $operasi->pasien()->delete();
+        $operasi = Operasi::where('id', $id)->with(['pasien'])->first();
         if (!$operasi) {
             return response()->json([
                 'status' => false,
@@ -235,10 +241,90 @@ class OperasiController extends Controller
             ], 404);
         }
 
+        try {
+            if($operasi->foto_sebelum_operasi !== '/images/data_pasien/default.png'){
+                $this->unlinkImage($operasi->foto_sebelum_operasi);
+            }
+            if($operasi->foto_setelah_operasi !== '/images/data_pasien/default.png'){
+                $this->unlinkImage($operasi->foto_setelah_operasi);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal menghapus gambar: ' . $e->getMessage(),
+            ], 500);
+        }
+        $operasi->pasien->delete();
+        $operasi->delete();
         return response()->json([
             'status' => true,
             'message' => 'Data Operasi Berhasil Dihapus',
         ]);
     }
+    public function search(Request $request)
+    {
+        $validate = Validator::make($request->query(), [
+            'nama_pasien' => 'string|max:255',
+            'umur_pasien' => 'integer|min:0',
+            'jenis_kelamin' => 'in:L,P',
+            'no_telepon' => 'string|max:15',
+            'tanggal_lahir' => 'date',
+            'tanggal_operasi' => 'date',
+            'tehnik_operasi' => 'string|max:255',
+            'lokasi_operasi' => 'string|max:255',
+        ],
+        );
+        if ($validate->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'invalid paramter',
+                'errors' => $validate->errors(),
+            ], 422);
+        }
+        $queryList = ['nama_pasien', 'tanggal_lahir', 'jenis_kelamin', 'umur_pasien', 'tanggal_operasi','no_telepon', 'lokasi_operasi','tehnik_operasi'];
+        $pasientQuery = ['nama_pasien', 'tanggal_lahir', 'jenis_kelamin', 'umur_pasien', 'no_telepon'];
+        $query = $request->query();
+        // cek query nya harus sama
+        $operasi = Operasi::query();
+        foreach ($query as $key => $field) {
+            if (!in_array($key, $queryList)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid query parameter: ' . $key,
+                ], 422);
+            }
+            if(in_array($key, $pasientQuery)){
+                $operasi->whereHas('pasien', function ($query) use ($key, $field) {
+                    if($key =='tanggal_lahir'){
+                        try {
+                            $field = Carbon::parse($field)->format('Y-m-d');
+                            $query->whereDate($key, $field);
+                        } catch (\Exception $e) {
+                            return response()->json([
+                                'status' => false,
+                                'message' => 'Invalid date format for tanggal_lahir',
+                            ], 422);
+                        }
+                    }
+                    $query->where($key, 'like', '%' . $field . '%');
+                });
+            }else{
+                $operasi->where($key, 'like', '%' . $field . '%');
+            }
+        }
+        $operasi = $operasi->with(['jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator','pasien'])->get();
 
+        if ($operasi->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Pasien Tidak Ditemukan',
+                'data' => null
+            ], 404);
+        }
+        return response()->json([
+            'status' => true,
+            'message' => 'Data Pasien Ditemukan',
+            'data' => $operasi
+        ]);
+    }
 }

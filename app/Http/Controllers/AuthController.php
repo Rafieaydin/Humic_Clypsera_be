@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\AddressDetails;
+use App\Models\detailUser;
 use App\Models\User;
 use App\Models\UserDetails;
 use Carbon\Carbon;
@@ -17,6 +18,8 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Support\Testing\Fakes\Fake;
+
 /**
  * @group Authentication
  *
@@ -91,6 +94,20 @@ class authController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        // set default detail_user
+        detailUser::create([
+            'user_id' => $user->id,
+            'nik' => $request->nik ?? '',
+            'pekerjaan' => $request->pekerjaan ?? '',
+            'tanggal_lahir' => Carbon::now(),
+            'umur' => $request->umur ?? 0,
+            'alamat' => $request->alamat ?? '',
+            'jenis_kelamin' => 'L',
+            'no_telepon' => '0000000000',
+            'foto' => '/images/profile/default.png',
+        ]);
+
 
         $user->assignRole($request->role ?? 'user');
 

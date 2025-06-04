@@ -28,6 +28,7 @@ class detail_userSeeder extends Seeder
                     'alamat' => $faker->address('id_ID'),
                     'jenis_kelamin' => $faker->randomElement(['L', 'P']),
                     'no_telepon' => "62" . $faker->unique()->numerify('##########'),
+                    'foto' => '/images/profile/default.png',
                 ],
             ]);
         }

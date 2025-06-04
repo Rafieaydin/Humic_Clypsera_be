@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('operasi', function (Blueprint $table) {
             $table->id();
-            // $table->foreignID('pasien_id')->constrained('users')->onDelete('cascade');
+            $table->foreignID('pasien_id')->constrained('pasien')->onDelete('cascade');
             $table->date('tanggal_operasi');
             $table->string('tehnik_operasi', 100);
             $table->string('lokasi_operasi', 100);
@@ -27,11 +27,11 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::table('pasien', function (Blueprint $table) {
-            // $table->integer('operasi_id')->nullable()->after('operator_id');
-            $table->foreignId('operasi_id')->constrained('operasi')->onDelete('cascade');
+        // Schema::table('pasien', function (Blueprint $table) {
+        //     // $table->integer('operasi_id')->nullable()->after('operator_id');
+        //     $table->foreignId('operasi_id')->constrained('operasi')->onDelete('cascade');
 
-        });
+        // });
     }
 
     /**

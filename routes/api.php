@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\authController;
 use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\RolePremissionController;
 use App\Http\Controllers\DiagnosisController;
 use App\Http\Controllers\JenisKelainanController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\inputDataController;
 use App\Http\Controllers\KategoriPermohonanController;
 use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\YayasanController;
 
 Route::post('/auth/login', [authController::class, 'login']);
 Route::post('/auth/register', [authController::class, 'register']);
@@ -23,7 +25,7 @@ Route::post('/auth/reset-password', [authController::class, 'reset_password']);
 
 
 Route::middleware(['auth:api'])->group(function () {
-
+    Route::get('/chart', [ChartController::class, 'dashhart']);
     Route::post('/auth/refresh', [authController::class, 'refresh']);
     Route::post('/auth/logout', [authController::class, 'logout']);
 
@@ -79,6 +81,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::prefix('operasi')->group(function(){
         Route::get('/', [OperasiController::class, 'index']);
         Route::get('/show/{id}', [OperasiController::class, 'show']);
+        Route::get('/search', [OperasiController::class, 'search']);
         Route::post('/store', [OperasiController::class, 'store']);
         Route::patch('/{id}/update', [OperasiController::class, 'update']);
         Route::delete('/{id}/delete', [OperasiController::class, 'destroy']);
@@ -88,6 +91,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::prefix('pasien')->group(function(){
         Route::get('/', [PasienController::class, 'index']);
         Route::get('/show/{id}', [PasienController::class, 'show']);
+        Route::get('/search', [PasienController::class, 'search']);
         Route::post('/store', [PasienController::class, 'store']);
         Route::patch('/{id}/update', [PasienController::class, 'update']);
         Route::delete('/{id}/delete', [PasienController::class, 'destroy']);
@@ -116,7 +120,17 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('/find/{id}', [PermohonanController::class, 'find']);
         Route::get('/search', [PermohonanController::class, 'search']);
         Route::post('/store', [PermohonanController::class, 'store']);
+        Route::post('/status/{id}', [PermohonanController::class, 'updateStatus']);
         Route::patch('/{id}/update', [PermohonanController::class, 'update']);
         Route::delete('/{id}/delete', [PermohonanController::class, 'destroy']);
+    });
+
+    Route::prefix('yayasan')->group(function(){
+        Route::get('/', [YayasanController::class, 'index']);
+        Route::get('/find/{id}', [YayasanController::class, 'find']);
+        Route::get('/search', [YayasanController::class, 'search']);
+        Route::post('/store', [YayasanController::class, 'store']);
+        Route::patch('/{id}/update', [YayasanController::class, 'update']);
+        Route::delete('/{id}/delete', [YayasanController::class, 'destroy']);
     });
 });

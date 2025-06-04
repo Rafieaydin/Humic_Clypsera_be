@@ -35,7 +35,6 @@ class PasienDataSeeder extends Seeder
                 'riwayat_kawin_berabat' => $faker->randomElement(['Tidak ada', 'Ada']),
                 'riwayat_terdahulu' => $faker->randomElement(['Tidak ada', 'Ada']),
                 'operator_id' => $faker->randomElement($operator_id),
-                'operasi_id' => $i,
             ]);
         }
 

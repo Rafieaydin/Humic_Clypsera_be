@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\kategoriPermohonan;
 use Illuminate\Http\Request;
 use App\Models\Permohonan;
+use Illuminate\Support\Facades\Validator;
 
 class PermohonanController extends Controller
 {
@@ -98,6 +99,75 @@ class PermohonanController extends Controller
 
         return response()->json([
             'message' => 'Permohonan deleted successfully',
+        ], 200);
+    }
+
+    public function UpdateStatus(Request $request, $id)
+    {
+        $permohonan = Permohonan::find($id);
+        if (!$permohonan) {
+            return response()->json(['message' => 'Data not found'], 404);
+        }
+
+        $request->validate([
+            'status_permohonan' => 'required|string|in:pending,approved,rejected',
+        ]);
+
+        $permohonan->update(['status_permohonan' => $request->status_permohonan]);
+
+        return response()->json([
+            'message' => 'Status updated successfully',
+            'data' => $permohonan->load(['kategori','operasi']),
+        ], 200);
+    }
+
+    public function search(Request $request)
+    {
+        Validator::make($request->query(), [
+            'id' => 'integer|exists:permohonan_data,id',
+            'nama_pemohon' => 'string|min:3|max:255',
+            'nik_pemohon' => 'string|min:10|max:15',
+            'email_pemohon' => 'email',
+            'no_telepon' => 'string|min:10|max:15',
+            'status_permohonan' => 'string|in:pending,approved,rejected',
+        ])->validate();
+
+        $query = Permohonan::with(['kategori','operasi']);
+        $listQuery = ['id', 'nama_pemohon', 'nik_pemohon', 'email_pemohon', 'no_telepon', 'status_permohonan'];
+        foreach ($listQuery as $key) {
+            if(!in_array($key,$listQuery)){
+                return response()->json(['message' => 'Invalid query parameter: ' . $key], 400);
+            }
+        }
+
+        if ($request->has('id')) {
+            $query->where('id', $request->id);
+        }
+        if ($request->has('nama_pemohon')) {
+            $query->where('nama_pemohon', 'like', '%' . $request->nama_pemohon . '%');
+        }
+        if ($request->has('nik_pemohon')) {
+            $query->where('nik_pemohon', $request->nik_pemohon);
+        }
+        if ($request->has('email_pemohon')) {
+            $query->where('email_pemohon', $request->email_pemohon);
+        }
+        if ($request->has('no_telepon')) {
+            $query->where('no_telepon', $request->no_telepon);
+        }
+        if ($request->has('status_permohonan')) {
+            $query->where('status_permohonan', $request->status_permohonan);
+        }
+
+        $permohonan = $query->get();
+
+        if ($permohonan->isEmpty()) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json([
+            'status' => 'Data ditemukan',
+            'data' => $permohonan,
         ], 200);
     }
 
