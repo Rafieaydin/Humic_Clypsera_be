@@ -30,6 +30,7 @@ class OperasiDataSeeder extends Seeder
                         'Operasi Langit-langit Sumbing',
                         'Operasi Kombinasi Bibir dan Langit-langit Sumbing'
                     ]),
+                    'nama_penyelenggara' => $faker->company,
                     'lokasi_operasi' => $faker->randomElement([
                         'RS Cleft Care',
                         'RS Sumbing Indonesia',

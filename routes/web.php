@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\authController;
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\FcmController;
 use Illuminate\Support\Facades\DB as FacadesDB;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,6 @@ Route::post('/auth/reset_password', [authController::class, 'reset_password_view
 Route::get("testNotification", [FcmController::class, 'sendNotificationFirebase'])
     ->name('test-notification');
 
-    Route::get('/test', function () {
+    Route::get('/', function () {
         return response()->json(['message' => 'Test route is working'], 200);
     })->name('test.route');

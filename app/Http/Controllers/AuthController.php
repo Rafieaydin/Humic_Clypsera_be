@@ -136,7 +136,7 @@ class authController extends Controller
     {
         $user = User::where("id",Auth()->id())->first();
         if ($user) {
-            return response()->json($user);
+            return response()->json($user->with(['roles', 'permissions','detail_user'])->first());
         }
         return response()->json(['error' => 'Unauthorized'], 401);
     }

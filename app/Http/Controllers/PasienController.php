@@ -25,7 +25,7 @@ class PasienController extends Controller
         $this->authorize('viewAny', Pasien::class);
         $pasien = Pasien::with(['operasi'=> fn ($query) =>
             $query->with(['jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])
-        ])->get();
+        ])->orderBy('id','DESC')->get();
         if ($pasien->isEmpty()) {
             return response()->json([
                 'status' => false,
@@ -64,7 +64,8 @@ class PasienController extends Controller
             'jenis_terapi_id' => 'required|exists:jenis_terapi,id',
             'diagnosis_id' => 'required|exists:diagnosis,id',
             'follow_up' => 'required',
-            // 'operator_id' => 'required|exists:users,id',
+            'operator_id' => 'required|exists:users,id',
+            'nama_penyelenggara' => 'required|string|max:100',
         ]);
 
         if($request->hasFile('foto_sebelum_operasi')){
@@ -104,6 +105,7 @@ class PasienController extends Controller
             'follow_up' => $request->follow_up,
             'operator_id' => $request->operator_id,
             'pasien_id' => $pasien->id,
+            'nama_penyelenggara' => $request->nama_penyelenggara,
         ]);
 
 
@@ -170,7 +172,8 @@ class PasienController extends Controller
             'jenis_terapi_id' => 'required|exists:jenis_terapi,id',
             'diagnosis_id' => 'required|exists:diagnosis,id',
             'follow_up' => 'required',
-            // 'operator_id' => 'required|exists:users,id',
+            'nama_penyelenggara' => 'required|string|max:100',
+            'operator_id' => 'required|exists:users,id',
         ]);
 
             if($request->hasFile('foto_sebelum_operasi') && $request->file('foto_sebelum_operasi')->isValid()){
@@ -215,6 +218,7 @@ class PasienController extends Controller
             'jenis_terapi_id' => $request->jenis_terapi_id,
             'diagnosis_id' => $request->diagnosis_id,
             'follow_up' => $request->follow_up,
+            'nama_penyelenggara' => $request->nama_penyelenggara,
             // 'operator_id' => $request->operator_id,
         ]);
         $pasien = Pasien::with(['operasi'=> fn ($query) =>

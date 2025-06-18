@@ -22,10 +22,13 @@ Route::post('/auth/login', [authController::class, 'login']);
 Route::post('/auth/register', [authController::class, 'register']);
 Route::post('/auth/forgot-password', [authController::class, 'forget_password']);
 Route::post('/auth/reset-password', [authController::class, 'reset_password']);
+Route::get('/auth/user', [authController::class, 'user']);
+
 
 
 Route::middleware(['auth:api'])->group(function () {
     Route::get('/chart', [ChartController::class, 'dashhart']);
+    Route::post('/auth/me', [authController::class, 'me']);
     Route::post('/auth/refresh', [authController::class, 'refresh']);
     Route::post('/auth/logout', [authController::class, 'logout']);
 

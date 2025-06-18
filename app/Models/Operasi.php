@@ -21,6 +21,7 @@ class Operasi extends Model
         'follow_up',
         'operator_id',
         'operasi_id',
+        'nama_penyelenggara',
     ];
 
     public function pasien()

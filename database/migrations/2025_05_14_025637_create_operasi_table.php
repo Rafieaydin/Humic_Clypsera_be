@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('operasi', function (Blueprint $table) {
             $table->id();
             $table->foreignID('pasien_id')->constrained('pasien')->onDelete('cascade');
+            $table->string('nama_penyelenggara', 100);
             $table->date('tanggal_operasi');
             $table->string('tehnik_operasi', 100);
             $table->string('lokasi_operasi', 100);
