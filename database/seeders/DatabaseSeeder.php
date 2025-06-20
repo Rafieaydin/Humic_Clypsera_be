@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
         PermohonanSeeder::class,
         YayasanSeeder::class,
         RatingYayasanSeeder::class,
+        AddSukuPasien::class,
         ]);
     }
 }

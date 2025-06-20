@@ -48,7 +48,7 @@ class PasienController extends Controller
             'umur_pasien' => 'required|integer',
             'jenis_kelamin' => 'required|in:L,P',
             'alamat_pasien' => 'required',
-            'no_telepon' => 'required|numeric',
+            // 'no_telepon' => 'required|numeric',
             'pasien_anak_ke_berapa' => 'required|integer',
             'kelainan_kotigental' => 'required',
             'riwayat_kehamilan' => 'required',
@@ -66,6 +66,7 @@ class PasienController extends Controller
             'follow_up' => 'required',
             'operator_id' => 'required|exists:users,id',
             'nama_penyelenggara' => 'required|string|max:100',
+            'suku_pasien' => 'nullable|string|max:50',
         ]);
 
         if($request->hasFile('foto_sebelum_operasi')){
@@ -84,7 +85,7 @@ class PasienController extends Controller
             'umur_pasien' => $request->umur_pasien,
             'jenis_kelamin' => $request->jenis_kelamin,
             'alamat_pasien' => $request->alamat_pasien,
-            'no_telepon' => $request->no_telepon,
+            'no_telepon' => '0000000000',
             'pasien_anak_ke_berapa' => $request->pasien_anak_ke_berapa,
             'kelainan_kotigental' => $request->kelainan_kotigental,
             'riwayat_kehamilan' => $request->riwayat_kehamilan,
@@ -92,6 +93,7 @@ class PasienController extends Controller
             'riwayat_kawin_berabat' => $request->riwayat_kawin_berabat,
             'riwayat_terdahulu' => $request->riwayat_terdahulu,
             'operator_id' => $request->operator_id,
+            'suku_pasien' => $request->suku_pasien,
         ]);
         $operasi = Operasi::create([
             'tanggal_operasi' => $request->tanggal_operasi,
@@ -156,7 +158,7 @@ class PasienController extends Controller
             'umur_pasien' => 'required|integer',
             'jenis_kelamin' => 'required|in:L,P',
             'alamat_pasien' => 'required',
-            'no_telepon' => 'required|numeric',
+            // 'no_telepon' => 'required|numeric',
             'pasien_anak_ke_berapa' => 'required|integer',
             'kelainan_kotigental' => 'required',
             'riwayat_kehamilan' => 'required',
@@ -174,6 +176,7 @@ class PasienController extends Controller
             'follow_up' => 'required',
             'nama_penyelenggara' => 'required|string|max:100',
             'operator_id' => 'required|exists:users,id',
+            'suku_pasien' => 'nullable|string|max:50',
         ]);
 
             if($request->hasFile('foto_sebelum_operasi') && $request->file('foto_sebelum_operasi')->isValid()){
@@ -198,13 +201,14 @@ class PasienController extends Controller
             'umur_pasien' => $request->umur_pasien,
             'jenis_kelamin' => $request->jenis_kelamin,
             'alamat_pasien' => $request->alamat_pasien,
-            'no_telepon' => $request->no_telepon,
+            'no_telepon' => '0000000000',
             'pasien_anak_ke_berapa' => $request->pasien_anak_ke_berapa,
             'kelainan_kotigental' => $request->kelainan_kotigental,
             'riwayat_kehamilan' => $request->riwayat_kehamilan,
             'riwayat_keluarga_pasien' => $request->riwayat_keluarga_pasien,
             'riwayat_kawin_berabat' => $request->riwayat_kawin_berabat,
             'riwayat_terdahulu' => $request->riwayat_terdahulu,
+            'suku_pasien' => $request->suku_pasien,
             // 'operator_id' => $request->operator_id,
         ]);
 

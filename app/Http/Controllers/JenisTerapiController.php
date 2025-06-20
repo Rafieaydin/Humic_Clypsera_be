@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class JenisTerapiController extends Controller
 {
     public function index(){
-        $this->authorize('viewAny', JenisTerapi::class);
+        // $this->authorize('viewAny', JenisTerapi::class);
         $jenisTerapi = JenisTerapi::all();
         if($jenisTerapi->isEmpty()){
             return response()->json([
@@ -25,7 +25,7 @@ class JenisTerapiController extends Controller
     }
 
     public function show($id){
-        $this->authorize('view', JenisTerapi::class);
+        // $this->authorize('view', JenisTerapi::class);
         $jenisTerapi = JenisTerapi::find($id);
         if(!$jenisTerapi){
             return response()->json([
@@ -42,7 +42,7 @@ class JenisTerapiController extends Controller
     }
 
     public function store(Request $request){
-        $this->authorize('create', JenisTerapi::class);
+        // $this->authorize('create', JenisTerapi::class);
         $request->validate([
             'nama_terapi' => 'required',
             'deskripsi_terapi' => 'required'
@@ -56,7 +56,11 @@ class JenisTerapiController extends Controller
     }
 
     public function update(Request $request, $id){
-        $this->authorize('update', JenisTerapi::class);
+        // $this->authorize('update', JenisTerapi::class);
+        $request->validate([
+            'nama_terapi' => 'required',
+            'deskripsi_terapi' => 'required'
+        ]);
         $jenisTerapi = JenisTerapi::find($id);
         if(!$jenisTerapi){
             return response()->json([
@@ -74,7 +78,7 @@ class JenisTerapiController extends Controller
     }
 
     public function destroy($id){
-        $this->authorize('delete', JenisTerapi::class);
+        // $this->authorize('delete', JenisTerapi::class);
         $jenisTerapi = JenisTerapi::find($id);
         if(!$jenisTerapi){
             return response()->json([

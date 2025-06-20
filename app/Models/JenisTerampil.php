@@ -9,8 +9,8 @@ class JenisTerampil extends Model
     protected $table = 'jenis_terapi';
 
     protected $fillable = [
-        'nama_terampi',
-        'deskripsi_terampi',
+        'nama_terapi',
+        'deskripsi_terapi',
     ];
 
     protected $hidden = [

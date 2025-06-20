@@ -23,6 +23,7 @@ class Pasien extends Model
         'riwayat_kawin_berabat',
         'riwayat_terdahulu',
         'operator_id',
+        'suku_pasien',
     ];
 
     public function operasi()
