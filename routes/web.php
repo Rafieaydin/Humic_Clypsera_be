@@ -3,6 +3,7 @@
 use App\Http\Controllers\authController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\FcmController;
+use App\Http\Controllers\ZipController;
 use Illuminate\Support\Facades\DB as FacadesDB;
 use Illuminate\Support\Facades\Route;
 
@@ -19,3 +20,7 @@ Route::get("testNotification", [FcmController::class, 'sendNotificationFirebase'
     Route::get('/', function () {
         return response()->json(['message' => 'Test route is working'], 200);
     })->name('test.route');
+
+Route::get('/export/{token}', [ZipController::class, 'exportDataPeromohonCSV'])
+    ->name('export.data.peromohon')
+    ->where('token', '[a-zA-Z0-9-]+');

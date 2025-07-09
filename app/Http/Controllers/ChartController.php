@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\detailUser;
 use App\Models\JenisTerampil;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
 class ChartController extends Controller
 {
@@ -31,6 +33,14 @@ class ChartController extends Controller
             ->mapWithKeys(function ($item) {
                 return [$item->jenis_kelamin => $item->total];
             }),
+            'user'=> [
+                "total_user" => User::has('roles')->count(),
+                "role" => [
+                    "operator" => Role::where('name', 'operator')->first()->users()->count() ?? 0,
+                    "admin" => Role::where('name', 'admin')->first()->users()->count() ?? 0,
+                    "user" => Role::where('name', 'user')->first()->users()->count()  ??  0,
+                ]
+            ]
 
     ]);
     }

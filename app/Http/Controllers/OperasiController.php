@@ -52,7 +52,7 @@ class OperasiController extends Controller
             'kelainan_kotigental' => 'required',
             'riwayat_kehamilan' => 'required',
             'riwayat_keluarga_pasien' => 'required',
-            'riwayat_kawin_berabat' => 'required',
+            'riwayat_kawin_kerabat' => 'required',
             'riwayat_terdahulu' => 'required',
             'tanggal_operasi' => 'required|date',
             'tehnik_operasi' => 'required',
@@ -90,7 +90,7 @@ class OperasiController extends Controller
             'kelainan_kotigental' => $request->kelainan_kotigental,
             'riwayat_kehamilan' => $request->riwayat_kehamilan,
             'riwayat_keluarga_pasien' => $request->riwayat_keluarga_pasien,
-            'riwayat_kawin_berabat' => $request->riwayat_kawin_berabat,
+            'riwayat_kawin_kerabat' => $request->riwayat_kawin_kerabat,
             'riwayat_terdahulu' => $request->riwayat_terdahulu,
             'operator_id' => $request->operator_id,
             'suku_pasien' => $request->suku_pasien,
@@ -140,7 +140,7 @@ class OperasiController extends Controller
     public  function update(Request $request, $id)
     {
         $this->authorize('update', Operasi::class);
-        $operasi = Operasi::with(['pasien', 'jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])->find($id);
+        $operasi = Operasi::with(['pasien', 'jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])->where('id', $id)->first();
         if (!$operasi) {
             return response()->json([
                 'status' => false,
@@ -159,13 +159,13 @@ class OperasiController extends Controller
             'kelainan_kotigental' => 'required',
             'riwayat_kehamilan' => 'required',
             'riwayat_keluarga_pasien' => 'required',
-            'riwayat_kawin_berabat' => 'required',
+            'riwayat_kawin_kerabat' => 'required',
             'riwayat_terdahulu' => 'required',
             'tanggal_operasi' => 'required|date',
             'tehnik_operasi' => 'required',
             'lokasi_operasi' => 'required',
-            'foto_sebelum_operasi' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'foto_setelah_operasi' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            // 'foto_sebelum_operasi' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            // 'foto_setelah_operasi' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'jenis_kelainan_cleft_id' => 'required|exists:jenis_kelainan_cleft,id',
             'jenis_terapi_id' => 'required|exists:jenis_terapi,id',
             'diagnosis_id' => 'required|exists:diagnosis,id',
@@ -182,7 +182,8 @@ class OperasiController extends Controller
                 'message' => 'Data Pasien Tidak Ditemukan',
             ], 404);
         }
-
+        $foto_sebelum_operasi = null;
+        $foto_setelah_operasi = null;
             if($request->hasFile('foto_sebelum_operasi') && $request->file('foto_sebelum_operasi')->isValid()){
                 if($operasi->foto_sebelum_operasi !== '/images/data_pasien/default.png'){
                     $this->unlinkImage($operasi->foto_sebelum_operasi);
@@ -210,7 +211,7 @@ class OperasiController extends Controller
             'kelainan_kotigental' => $request->kelainan_kotigental,
             'riwayat_kehamilan' => $request->riwayat_kehamilan,
             'riwayat_keluarga_pasien' => $request->riwayat_keluarga_pasien,
-            'riwayat_kawin_berabat' => $request->riwayat_kawin_berabat,
+            'riwayat_kawin_kerabat' => $request->riwayat_kawin_kerabat,
             'riwayat_terdahulu' => $request->riwayat_terdahulu,
             'suku_pasien' => $request->suku_pasien,
             // 'operator_id' => $request->operator_id,
@@ -220,8 +221,8 @@ class OperasiController extends Controller
             'tanggal_operasi' => $request->tanggal_operasi,
             'tehnik_operasi' => $request->tehnik_operasi,
             'lokasi_operasi' => $request->lokasi_operasi,
-            'foto_sebelum_operasi' => '/images/data_pasien/' . $foto_sebelum_operasi,
-            'foto_setelah_operasi' => '/images/data_pasien/' . $foto_setelah_operasi,
+            'foto_sebelum_operasi' => ($foto_sebelum_operasi ? ('/images/data_pasien/' . $foto_sebelum_operasi) : $operasi->foto_sebelum_operasi),
+            'foto_setelah_operasi' => ($foto_setelah_operasi ? ('/images/data_pasien/' . $foto_setelah_operasi) : $operasi->foto_setelah_operasi),
             'jenis_kelainan_cleft_id' => $request->jenis_kelainan_cleft_id,
             'jenis_terapi_id' => $request->jenis_terapi_id,
             'diagnosis_id' => $request->diagnosis_id,

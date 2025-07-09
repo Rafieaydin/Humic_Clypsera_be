@@ -115,8 +115,46 @@ class authController extends Controller
             'message' => 'User registered successfully',
             'user' => $user,
         ], 201);
-
     }
+
+    public function update_user(Request $request, $id)
+    {
+        $this->authorize('update', User::class);
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'Data not found'], 404);
+        }
+
+        $request->validate([
+            'name' => 'required|string|min:10|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'role' => 'required|exists:roles,name',
+        ]);
+
+        if(!empty($request->password)){
+            $request->validate([
+                'password' => 'required|string|min:10|max:255',
+                'password_confirmation' => 'required|string|min:10|max:255',
+            ]);
+        }
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        if(!empty($request->password)){
+            $user->password = Hash::make($request->password);
+        }
+        $user->save();
+        try {
+            $user->syncRoles($request->role);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Role not found'], 404);
+        }
+        return response()->json([
+            'message' => 'User updated successfully',
+            'data' => $user->load('detail_user', 'roles'),
+        ], 200);
+    }
+
 
     /**
      * Get Authenticated User
@@ -134,9 +172,12 @@ class authController extends Controller
      */
     public function me()
     {
-        $user = User::where("id",Auth()->id())->first();
+        if(!auth()->check()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        $user = User::where("id",auth()->user()->id)->with(['roles', 'permissions','detail_user'])->first();
         if ($user) {
-            return response()->json($user->with(['roles', 'permissions','detail_user'])->first());
+            return response()->json($user);
         }
         return response()->json(['error' => 'Unauthorized'], 401);
     }
@@ -174,7 +215,7 @@ class authController extends Controller
         Mail::send('emails.reset_password', ['token' => $token, 'url' => $url], function ($message) use ($user) {
             $message->to($user->email);
             $message->subject('Reset Password');
-            $message->from('laravel@gmail.com', 'Laravel');
+            // $message->from('laravel@gmail.com', 'Laravel');
         });
         return response()->json([
             'message' => 'Password reset link sent to your email.',
@@ -239,7 +280,9 @@ class authController extends Controller
 
         DB::table('password_reset_tokens')->where(['email'=> $request->email])->delete();
 
-        return redirect()->to('https://example.com/login')->with('success', 'Password reset successfully.');
+        $redirectUrl = env('REDIRECT_URL');
+
+        return redirect()->to($redirectUrl)->with('success', 'Password reset successfully.');
     }
 
     /**

@@ -53,7 +53,7 @@ class PasienController extends Controller
             'kelainan_kotigental' => 'required',
             'riwayat_kehamilan' => 'required',
             'riwayat_keluarga_pasien' => 'required',
-            'riwayat_kawin_berabat' => 'required',
+            'riwayat_kawin_kerabat' => 'required',
             'riwayat_terdahulu' => 'required',
             'tanggal_operasi' => 'required|date',
             'tehnik_operasi' => 'required',
@@ -90,7 +90,7 @@ class PasienController extends Controller
             'kelainan_kotigental' => $request->kelainan_kotigental,
             'riwayat_kehamilan' => $request->riwayat_kehamilan,
             'riwayat_keluarga_pasien' => $request->riwayat_keluarga_pasien,
-            'riwayat_kawin_berabat' => $request->riwayat_kawin_berabat,
+            'riwayat_kawin_kerabat' => $request->riwayat_kawin_kerabat,
             'riwayat_terdahulu' => $request->riwayat_terdahulu,
             'operator_id' => $request->operator_id,
             'suku_pasien' => $request->suku_pasien,
@@ -163,13 +163,13 @@ class PasienController extends Controller
             'kelainan_kotigental' => 'required',
             'riwayat_kehamilan' => 'required',
             'riwayat_keluarga_pasien' => 'required',
-            'riwayat_kawin_berabat' => 'required',
+            'riwayat_kawin_kerabat' => 'required',
             'riwayat_terdahulu' => 'required',
             'tanggal_operasi' => 'required|date',
             'tehnik_operasi' => 'required',
             'lokasi_operasi' => 'required',
-            'foto_sebelum_operasi' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'foto_setelah_operasi' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            // 'foto_sebelum_operasi' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            // 'foto_setelah_operasi' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'jenis_kelainan_cleft_id' => 'required|exists:jenis_kelainan_cleft,id',
             'jenis_terapi_id' => 'required|exists:jenis_terapi,id',
             'diagnosis_id' => 'required|exists:diagnosis,id',
@@ -178,6 +178,8 @@ class PasienController extends Controller
             'operator_id' => 'required|exists:users,id',
             'suku_pasien' => 'nullable|string|max:50',
         ]);
+        $foto_sebelum_operasi = null;
+        $foto_setelah_operasi = null;
 
             if($request->hasFile('foto_sebelum_operasi') && $request->file('foto_sebelum_operasi')->isValid()){
                 if ($pasien->operasi->foto_sebelum_operasi !== '/images/data_pasien/default.png') {
@@ -206,7 +208,7 @@ class PasienController extends Controller
             'kelainan_kotigental' => $request->kelainan_kotigental,
             'riwayat_kehamilan' => $request->riwayat_kehamilan,
             'riwayat_keluarga_pasien' => $request->riwayat_keluarga_pasien,
-            'riwayat_kawin_berabat' => $request->riwayat_kawin_berabat,
+            'riwayat_kawin_kerabat' => $request->riwayat_kawin_kerabat,
             'riwayat_terdahulu' => $request->riwayat_terdahulu,
             'suku_pasien' => $request->suku_pasien,
             // 'operator_id' => $request->operator_id,
@@ -216,8 +218,8 @@ class PasienController extends Controller
             'tanggal_operasi' => $request->tanggal_operasi,
             'tehnik_operasi' => $request->tehnik_operasi,
             'lokasi_operasi' => $request->lokasi_operasi,
-            'foto_sebelum_operasi' => '/images/data_pasien/' . $foto_sebelum_operasi,
-            'foto_setelah_operasi' => '/images/data_pasien/' . $foto_setelah_operasi,
+            'foto_sebelum_operasi' => ($foto_sebelum_operasi ? ('/images/data_pasien/' . $foto_sebelum_operasi) : $pasien->operasi->foto_sebelum_operasi) ?? '/images/data_pasien/default.png',
+            'foto_setelah_operasi' => ($foto_setelah_operasi ? ('/images/data_pasien/' . $foto_setelah_operasi) : $pasien->operasi->foto_setelah_operasi) ?? '/images/data_pasien/default.png',
             'jenis_kelainan_cleft_id' => $request->jenis_kelainan_cleft_id,
             'jenis_terapi_id' => $request->jenis_terapi_id,
             'diagnosis_id' => $request->diagnosis_id,

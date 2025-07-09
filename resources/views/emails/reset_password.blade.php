@@ -107,7 +107,7 @@
             <p><a href="{{ $url }}" class="fallback-link">{{ $url }}</a></p>
             <p>If you did not request a password reset, please ignore this email or contact our support team.</p>
             <p>Thank you,</p>
-            <p>Your App Team</p>
+            <p>Humic Cleft Lip | Clypsera 2025</p>
         </div>
 
         <!-- Footer -->

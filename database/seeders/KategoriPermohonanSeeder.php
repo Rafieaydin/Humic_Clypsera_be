@@ -15,17 +15,16 @@ class KategoriPermohonanSeeder extends Seeder
     {
         DB::table('kategori_peromohonan')->insert([
             [
-                'kategori' => 'KTP',
+                'kategori' => 'Riset/Penelitian',
             ],
             [
-                'kategori' => 'KK',
+                'kategori' => 'Komersial',
             ],
             [
-                'kategori' => 'Akta Kelahiran',
-            ],
-            [
-                'kategori' => 'Akta Kematian',
+                'kategori' => 'Lainya',
             ],
         ]);
     }
+
+
 }

@@ -17,6 +17,7 @@ use App\Http\Controllers\KategoriPermohonanController;
 use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\YayasanController;
+use App\Http\Controllers\ZipController;
 
 Route::post('/auth/login', [authController::class, 'login']);
 Route::post('/auth/register', [authController::class, 'register']);
@@ -25,10 +26,15 @@ Route::post('/auth/reset-password', [authController::class, 'reset_password']);
 Route::get('/auth/user', [authController::class, 'user']);
 
 
+Route::get('/export/{token}', [ZipController::class, 'exportDataPeromohonCSV'])
+    ->name('export.data.peromohon')
+    ->where('token', '[a-zA-Z0-9-]+')->middleware('cors');
 
-Route::middleware(['auth:api'])->group(function () {
+Route::middleware(['auth:api','cors'])->group(function () {
+
     Route::get('/chart', [ChartController::class, 'dashhart']);
     Route::post('/auth/me', [authController::class, 'me']);
+    Route::patch('/auth/update-user/{id}', [authController::class, 'update_user']);
     Route::post('/auth/refresh', [authController::class, 'refresh']);
     Route::post('/auth/logout', [authController::class, 'logout']);
 
@@ -105,6 +111,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('/find/{id}', [UserController::class, 'find']);
         Route::get('/search', [UserController::class, 'search']);
         Route::post('/store', [UserController::class, 'store']);
+        Route::post('/edit-profile', [UserController::class, 'editProfile']);
         Route::patch('/{id}/update', [UserController::class, 'update']);
         Route::delete('/{id}/delete', [UserController::class, 'destroy']);
     });
@@ -126,6 +133,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/status/{id}', [PermohonanController::class, 'updateStatus']);
         Route::patch('/{id}/update', [PermohonanController::class, 'update']);
         Route::delete('/{id}/delete', [PermohonanController::class, 'destroy']);
+        Route::get('{id}/generate-token', [PermohonanController::class, 'generateToken']);
     });
 
     Route::prefix('yayasan')->group(function(){

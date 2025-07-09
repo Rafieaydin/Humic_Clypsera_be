@@ -49,7 +49,7 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
         $request->validate([
-            'name' => 'required|string|min:10|max:255',
+            'name' => 'required|string|min:4|max:255',
             'email' => 'required|email|unique:users,email,except,id',
             'password' => 'required|string|min:10|max:255',
             'password_confirmation' => 'required|string|min:10|max:255',
@@ -120,7 +120,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|min:10|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:10|max:255',
+            // 'password' => 'nullable|string|min:10|max:255',
             'nik' => 'required|string|min:10|max:255|unique:detail_user,nik,' . $user->id,
             'pekerjaan' => 'required|string|min:10|max:255',
             'tanggal_lahir' => 'required|date',
@@ -160,8 +160,8 @@ class UserController extends Controller
 
         if($request->hasFile('photo')) {
             $this->unlinkImage($user->detail_user->foto ?? '');
-            $user_name = Str::random(10) . '-' . $user->name . '-' . $request->file('photo')->getClientOriginalExtension();
-            $photoPath = $request->file('photo')->move('/images/profile', $user_name);
+            $user_name = Str::random(10) . '-' . $user->name . '.' . $request->file('photo')->getClientOriginalExtension();
+            $photoPath = $request->file('photo')->move('images/profile', $user_name);
             $user->detail_user()->update([
                 'foto' => '/images/profile', $user_name,
             ]);
@@ -183,6 +183,61 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'User updated successfully',
+            'data' => $user->load('detail_user'),
+        ], 200);
+    }
+
+    public function editProfile(Request $request){
+        $request->validate([
+            'name' => 'required|string|min:10|max:255',
+            'email' => 'required|email|unique:users,email,' . $request->user_id,
+            'nik' => 'required|string|min:10|max:255|unique:detail_user,nik,' . $request->user_id,
+            'pekerjaan' => 'required|string|min:10|max:255',
+            'tanggal_lahir' => 'required|date',
+            'umur' => 'required|integer',
+            'alamat' => 'required|string|min:10|max:255',
+            'jenis_kelamin' => 'required|in:L,P',
+            'no_telepon' => 'required|string|min:10|max:255',
+            'user_id' => 'required|integer|exists:users,id',
+        ]);
+
+        $user = User::with(['detail_user'])->where('id', $request->user_id)->first();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+        if($request->filled('nik')){
+            $cekNik = detailUser::where('nik', $request->nik)->where('user_id', '!=', $user->id)->first();
+            if ($cekNik) {
+                return response()->json(['message' => 'NIK already exists'], 400);
+            }
+        }
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+
+        if($request->hasFile('photo')) {
+            $this->unlinkImage($user->detail_user->foto ?? '');
+            $user_name = Str::random(10) . '-' . $user->name . '.' . $request->file('photo')->getClientOriginalExtension();
+            $request->file('photo')->move('images/profile', $user_name);
+            $user->detail_user->update([
+                'foto' => '/images/profile/' . $user_name,
+            ]);
+        }
+
+        $user->detail_user()->update([
+            'nik' => $request->nik,
+            'pekerjaan' => $request->pekerjaan,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'umur' => $request->umur,
+            'alamat' => $request->alamat,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'no_telepon' => $request->no_telepon,
+        ]);
+
+        return response()->json([
+            'message' => 'Profile updated successfully',
             'data' => $user->load('detail_user'),
         ], 200);
     }

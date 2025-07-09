@@ -16,7 +16,7 @@ class detailUser extends Model
         'alamat',
         'umur',
         'no_telepon',
-        'photo',
+        'foto',
     ];
 
     public function user()

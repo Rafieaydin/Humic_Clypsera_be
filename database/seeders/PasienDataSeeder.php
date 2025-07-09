@@ -19,20 +19,20 @@ class PasienDataSeeder extends Seeder
             $query->where('name', $role->name);
         })->select('id')->get()->pluck('id')->toArray();
         $operasi_id = \App\Models\Operasi::select('id')->get()->pluck('id')->toArray(); // luck sama select sama
-        $faker = \Faker\Factory::create();
+        $faker = \Faker\Factory::create('id_ID');
         for ($i=1; $i <= 100 ; $i++) {
             Pasien::create([
-                'nama_pasien' => 'Pasien ' . $i,
+                'nama_pasien' => $faker->name(),
                 'tanggal_lahir' => $faker->dateTimeBetween('-20 years', '-10 year')->format('Y-m-d'),
                 'umur_pasien' => $faker->numberBetween(10,20),
                 'jenis_kelamin' => $faker->randomElement(['L', 'P']),
-                'alamat_pasien' => $faker->address('id_ID'),
+                'alamat_pasien' => $faker->address(),
                 'no_telepon' => "62".$faker->unique()->numerify('##########'),
                 'pasien_anak_ke_berapa' => rand(1, 3),
                 'kelainan_kotigental' => $faker->randomElement(['Tidak ada', 'Ada']),
                 'riwayat_kehamilan' => $faker->randomElement(['Tidak ada', 'Ada']),
                 'riwayat_keluarga_pasien' => $faker->randomElement(['Tidak ada', 'Ada']),
-                'riwayat_kawin_berabat' => $faker->randomElement(['Tidak ada', 'Ada']),
+                'riwayat_kawin_kerabat' => $faker->randomElement(['Tidak ada', 'Ada']),
                 'riwayat_terdahulu' => $faker->randomElement(['Tidak ada', 'Ada']),
                 'operator_id' => $faker->randomElement($operator_id),
             ]);

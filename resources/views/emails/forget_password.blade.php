@@ -103,6 +103,7 @@
                                         autofocus
                                         aria-describedby="emailHelp"
                                         value="{{ $email ?? old('email') }}"
+                                        readonly
                                     >
                                     @error('email')
                                         <span class="text-danger" role="alert">{{ $message }}</span>

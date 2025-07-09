@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\kategoriPermohonan;
+use App\Models\Operasi;
 use Illuminate\Http\Request;
 use App\Models\Permohonan;
+use Exception;
 use Illuminate\Support\Facades\Validator;
+use illuminate\Support\Str;
 
 class PermohonanController extends Controller
 {
@@ -22,12 +25,19 @@ class PermohonanController extends Controller
 
     public function find($id)
     {
-        $permohonan = Permohonan::with(['kategori','operasi'])->find($id);
+        $permohonan = Permohonan::with(['kategori'])->find($id);
+        if($permohonan->scope == 'semua'){
+            $operasi = Operasi::with(['pasien', 'jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])->orderBy('id','DESC')->get();
+            $permohonan->operasi = $operasi;
+            return response()->json([
+                'data' => $permohonan,
+            ], 200);
+        }
         if (!$permohonan) {
             return response()->json(['message' => 'Data not found'], 404);
         }
         return response()->json([
-            'data' => $permohonan,
+            'data' => $permohonan->load(['kategori','operasi']),
         ], 200);
     }
 
@@ -50,11 +60,21 @@ class PermohonanController extends Controller
             'no_telepon' => 'required|string|min:10|max:15',
             'status_permohonan' => 'required|string|in:pending,approved,rejected',
             'alasan_permohonan' => 'required|string|min:10|max:255',
-            'operasi_id' => 'required|integer|exists:operasi,id',
+            // 'operasi_id' => 'required|integer|exists:operasi,id',
+            'scope' => 'required|in:semua,sendiri',
         ]);
 
 
         $permohonan = Permohonan::create($request->all());
+
+        if($request->scope == 'semua'){
+            $operasi = Operasi::with(['pasien', 'jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])->orderBy('id','DESC')->get();
+            $permohonan->operasi = $operasi;
+            return response()->json([
+                'message' => 'Permohonan created successfully',
+                'data' => $permohonan,
+            ], 200);
+        }
 
         return response()->json([
             'message' => 'Permohonan created successfully',
@@ -78,9 +98,19 @@ class PermohonanController extends Controller
             'status_permohonan' => 'required|string|in:pending,approved,rejected',
             'alasan_permohonan' => 'required|string|min:10|max:255',
             'operasi_id' => 'required|integer|exists:operasi,id',
+            'scope' => 'required|in:semua,sendiri',
         ]);
 
         $permohonan->update($request->all());
+
+        if($request->scope == 'semua'){
+            $operasi = Operasi::with(['pasien', 'jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])->orderBy('id','DESC')->get();
+            $permohonan->operasi = $operasi;
+            return response()->json([
+                'message' => 'Permohonan updated successfully',
+                'data' => $permohonan,
+            ], 200);
+        }
 
         return response()->json([
             'message' => 'Permohonan updated successfully',
@@ -168,6 +198,31 @@ class PermohonanController extends Controller
         return response()->json([
             'status' => 'Data ditemukan',
             'data' => $permohonan,
+        ], 200);
+    }
+
+    public function generateToken($id)
+    {
+        $permohonan = Permohonan::find($id);
+        if (!$permohonan) {
+            return response()->json(['message' => 'Data not found'], 404);
+        }
+
+        $token = $permohonan->generateToken->token ?? null;
+        if (!$token) {
+            try {
+            $token = Str::uuid()->toString();
+            Permohonan::find($id)->generateToken()->create([
+                'token' => $token,
+            ]);
+            } catch (Exception $e) {
+                return response()->json(['message' => $e], 403);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Token generated successfully',
+            'token' => $token,
         ], 200);
     }
 

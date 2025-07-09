@@ -15,7 +15,8 @@ class PermohonanSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = \Faker\Factory::create();
+        $faker = \Faker\Factory::create('id_ID');
+        $operasi = Operasi::count();
         for ($i=1; $i <= 10 ; $i++) {
             $random = Str::random(10);
             DB::table('permohonan_data')->insert([
@@ -27,7 +28,26 @@ class PermohonanSeeder extends Seeder
                     'no_telepon' => '62' . $faker->unique()->numerify('##########'),
                     'status_permohonan' => $faker->randomElement(['Diterima', 'Ditolak', 'Pending']),
                     'alasan_permohonan' => 'Permohonan untuk mendapatkan KTP baru.',
-                    'kategori_id' => $faker->randomElement([1, 2, 3, 4]),
+                    'kategori_id' => $faker->randomElement([1, 2, 3]),
+                    'scope' => 'sendiri',
+                ],
+            ]);
+        }
+
+        // Insert additional permohonan with different scope
+        for ($i=11; $i <= 20 ; $i++) {
+            $random = Str::random(10);
+            DB::table('permohonan_data')->insert([
+                [
+                    'operasi_id' => $faker->numberBetween(1, $operasi),
+                    'nama_pemohon' => 'Jane Doe',
+                    'nik_pemohon' => $faker->unique()->numerify('##########'),
+                    'email_pemohon' => $faker->unique()->safeEmail(),
+                    'no_telepon' => '62' . $faker->unique()->numerify('##########'),
+                    'status_permohonan' => $faker->randomElement(['Diterima', 'Ditolak', 'Pending']),
+                    'alasan_permohonan' => 'Permohonan untukmendapatkan KTP baru.',
+                    'kategori_id' => $faker->randomElement([1, 2, 3]),
+                    'scope' => 'semua',
                 ],
             ]);
         }

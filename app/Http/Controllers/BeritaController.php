@@ -47,7 +47,7 @@ class BeritaController extends Controller
         $berita = Berita::create([
             'judul' => $request->judul,
             'slug' => Str::slug($request->judul),
-            'gambar' => app()->make('url')->to('/images/' . $gambar),
+            'gambar' => 'images/' . $gambar,
             'content' => $request->content,
             'sumber' => $request->sumber,
             'status' => $request->status,
@@ -80,7 +80,7 @@ class BeritaController extends Controller
             }
             $request->file('gambar')->move(public_path('images'), $request->file('gambar')->getClientOriginalName());
             $gambar = $request->file('gambar')->getClientOriginalName();
-            $berita->gambar = app()->make('url')->to('/images/' . $gambar);
+            $berita->gambar = 'images/' . $gambar . '.' . $request->file('gambar')->getClientOriginalExtension();
         }
         $berita->update([
             'judul' => $request->judul ?? $berita->judul,

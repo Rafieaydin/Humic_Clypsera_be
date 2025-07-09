@@ -17,6 +17,7 @@ class permohonan extends Model
         'status_permohonan',
         'alasan_permohonan',
         'operasi_id',
+        'scope',
     ];
 
     public function kategori()
@@ -26,5 +27,16 @@ class permohonan extends Model
     public function operasi()
     {
         return $this->belongsTo(operasi::class, 'operasi_id');
+    }
+
+    public function generateToken()
+    {
+        if($this->status_permohonan !== 'approved') {
+            // pass to exception handler
+            return abort(403, 'Permohonan is not approved',[
+                'message' => 'Permohonan is not approved'
+            ]);
+        }
+        return $this->hasOne(PermohonanToken::class, 'permnohonan_data_id','id');
     }
 }

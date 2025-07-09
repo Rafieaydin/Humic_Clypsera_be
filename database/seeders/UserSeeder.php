@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Faker\Factory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -16,6 +17,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        $faker = \Faker\Factory::create('id_ID');
         $admin = User::create([
             'name' => 'Test User',
             'email' => 'admin@gmail.com',
@@ -37,8 +39,8 @@ class UserSeeder extends Seeder
 
         for ($i=0; $i < 10 ; $i++) {
             $user = User::create([
-                'name' => 'User ' . $i,
-                'email' => 'user-' . $i .'-'. Str::random(10) . '@gmail.com',
+                'name' => $faker->name(),
+                'email' => $faker->unique()->safeEmail(),
                 'password' => Hash::make('password'),
             ]);
             $user->assignRole('user');
@@ -46,11 +48,11 @@ class UserSeeder extends Seeder
 
         for ($i=1; $i < 10 ; $i++) {
             $operator = User::create([
-                'name' => 'operator ' . $i,
-                'email' => 'operator-' . $i .'-'. Str::random(10) . '@gmail.com',
+                'name' =>  $faker->name(),
+                'email' => $faker->unique()->safeEmail(),
                 'password' => Hash::make('password'),
             ]);
-            $user->assignRole('operator');
+            $operator->assignRole('operator');
         }
 
 

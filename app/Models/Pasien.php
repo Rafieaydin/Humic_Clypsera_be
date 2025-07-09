@@ -20,7 +20,7 @@ class Pasien extends Model
         'kelainan_kotigental',
         'riwayat_kehamilan',
         'riwayat_keluarga_pasien',
-        'riwayat_kawin_berabat',
+        'riwayat_kawin_kerabat',
         'riwayat_terdahulu',
         'operator_id',
         'suku_pasien',
