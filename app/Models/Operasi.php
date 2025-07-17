@@ -44,4 +44,9 @@ class Operasi extends Model
     {
         return $this->belongsTo(User::class, 'operator_id');
     }
+
+    public function permohonan()
+    {
+        $this->hasMany(Permohonan::class, 'operasi_id', 'id');
+    }
 }

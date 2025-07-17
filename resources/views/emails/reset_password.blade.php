@@ -1,120 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reset Your Password</title>
     <style>
-        /* Reset default styles */
-        body, table, td, a, p, h1, h2, h3, h4, h5, h6 {
+        body,
+        table,
+        td,
+        a,
+        p,
+        h1 {
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
         }
+
         body {
             background-color: #f4f4f4;
             padding: 20px;
         }
+
         .container {
             max-width: 600px;
-            margin: 0 auto;
+            margin: 20px auto;
             background-color: #ffffff;
-            border-radius: 8px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
         }
+
+        /* Header */
         .header {
-            background-color: #007bff;
-            color: #ffffff;
-            padding: 20px;
+            padding: 25px 30px;
             text-align: center;
+            background-color: #f8fafc;
         }
-        .header h1 {
-            font-size: 24px;
-            font-weight: 600;
+
+        .header img {
+            max-width: 160px;
         }
+
+        /* Content */
         .content {
-            padding: 30px;
-            color: #333333;
+            padding: 30px 40px;
+            color: #334155;
             line-height: 1.6;
         }
-        .content p {
+
+        .content h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #4971a9;
             margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .content p {
+            margin-bottom: 25px;
             font-size: 16px;
         }
+
+        .content .closing {
+            margin-bottom: 0;
+        }
+
+        .content .team-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #4971a9;
+            margin-bottom: 0;
+        }
+
+        .cta-button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
         .cta-button {
             display: inline-block;
-            padding: 12px 24px;
-            background-color: #007bff;
+            padding: 15px 35px;
+            background-color: #4971a9;
             color: #ffffff !important;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 16px;
-            font-weight: 500;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .cta-button:hover {
-            background-color: #0056b3;
-        }
-        .fallback-link {
-            word-break: break-all;
-            color: #007bff;
-            text-decoration: underline;
-        }
+
         .footer {
             padding: 20px;
             text-align: center;
-            background-color: #f8f9fa;
-            color: #666666;
-            font-size: 14px;
+            background-color: #f1f5f9;
+            color: #64748b;
+            font-size: 13px;
         }
+
         .footer p {
             margin: 0;
         }
+
+        .footer a {
+            color: #4971a9;
+            text-decoration: underline;
+        }
+
         @media only screen and (max-width: 600px) {
             .container {
-                width: 100%;
-                padding: 0;
+                width: 100% !important;
+                border-radius: 0;
             }
+
             .content {
-                padding: 20px;
-            }
-            .header h1 {
-                font-size: 20px;
-            }
-            .cta-button {
-                width: 100%;
-                text-align: center;
-                box-sizing: border-box;
+                padding: 25px;
             }
         }
+
     </style>
 </head>
+
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
-            <h1>Reset Your Password</h1>
+            <img src="{{ asset('images/reset_password/LOGO.svg') }}" alt="Clypsera Logo" />
         </div>
 
-        <!-- Content -->
         <div class="content">
+            <h1>Reset Your Password</h1>
             <p>Hello,</p>
-            <p>We received a request to reset your password. Click the button below to proceed:</p>
             <p>
-                <a href="{{ route('password.reset', $token) }}" class="cta-button">Reset Password</a>
+                We received a request to reset your password. Click the button below
+                to proceed:
             </p>
-            <p>If the button doesn’t work, copy and paste this link into your browser:</p>
+            <div class="cta-button-container">
+                <a href="{{ route('password.reset', $token) }}" class="cta-button">Reset Password</a>
+            </div>
+            <p>
+                If the button doesn’t work, copy and paste this link into your
+                browser:
+            </p>
             <p><a href="{{ $url }}" class="fallback-link">{{ $url }}</a></p>
-            <p>If you did not request a password reset, please ignore this email or contact our support team.</p>
+            <p>
+                If you did not request a password reset, please ignore this email or
+                contact our support team.
+            </p>
             <p>Thank you,</p>
-            <p>Humic Cleft Lip | Clypsera 2025</p>
+            <p class="team-name">Humic Cleft Lip | Clypsera 2025</p>
         </div>
 
-        <!-- Footer -->
         <div class="footer">
             <p>&copy; {{ date('Y') }} Your App. All rights reserved.</p>
-            <p>If you have any questions, contact us at <a href="mailto:support@yourdomain.com">support@yourdomain.com</a>.</p>
+            <p>
+                If you have any questions, contact us at
+                <a href="mailto:support@yourdomain.com">support@yourdomain.com</a>.
+            </p>
         </div>
     </div>
 </body>
+
 </html>

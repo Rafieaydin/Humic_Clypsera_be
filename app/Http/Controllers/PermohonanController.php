@@ -25,7 +25,13 @@ class PermohonanController extends Controller
 
     public function find($id)
     {
-        $permohonan = Permohonan::with(['kategori'])->find($id);
+        if(auth()->id()== null){
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $permohonan = Permohonan::with(['kategori'])->where('id', $id)->where('user_id',auth()->id())->first();
+        if (!$permohonan) {
+            return response()->json(['message' => 'Data not found'], 404);
+        }
         if($permohonan->scope == 'semua'){
             $operasi = Operasi::with(['pasien', 'jenisKelainan', 'jenisTerapi', 'diagnosis', 'operator'])->orderBy('id','DESC')->get();
             $permohonan->operasi = $operasi;
@@ -60,7 +66,7 @@ class PermohonanController extends Controller
             'no_telepon' => 'required|string|min:10|max:15',
             'status_permohonan' => 'required|string|in:pending,approved,rejected',
             'alasan_permohonan' => 'required|string|min:10|max:255',
-            // 'operasi_id' => 'required|integer|exists:operasi,id',
+            'user_id' => 'required|integer|exists:users,id',
             'scope' => 'required|in:semua,sendiri',
         ]);
 
@@ -97,6 +103,7 @@ class PermohonanController extends Controller
             'no_telepon' => 'required|string|min:10|max:15',
             'status_permohonan' => 'required|string|in:pending,approved,rejected',
             'alasan_permohonan' => 'required|string|min:10|max:255',
+            'user_id' => 'required|integer|exists:users,id',
             'operasi_id' => 'required|integer|exists:operasi,id',
             'scope' => 'required|in:semua,sendiri',
         ]);

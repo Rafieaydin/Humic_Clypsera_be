@@ -204,15 +204,22 @@ class authController extends Controller
             'created_at' => now(),
         ]);
 
+        $app_url = env('APP_URL');
         $eksternal_url = env('EXTERNAL_URL');
-        $url = $eksternal_url . '/auth/reset-password?email=' . $user->email . '&token=' . $token;
+        $reset_url = $app_url . '/auth/reset_password/' . $token;
+        if($eksternal_url && $app_url != $eksternal_url){
+            $app_url  = $eksternal_url . '/auth/reset_password?email=' . $user->email . '&token=' . $token;
+        }
+
+
+
         // Mail::send('emails.forgot_password', ['url' => $url], function ($message) use ($user) {
         //     $message->to($user->email);
         //     $message->subject('Reset Password');
         //     $message->from('laravel@gmail.com', 'Laravel');
         // });
 
-        Mail::send('emails.reset_password', ['token' => $token, 'url' => $url], function ($message) use ($user) {
+        Mail::send('emails.reset_password', ['token' => $token, 'url' => $reset_url], function ($message) use ($user) {
             $message->to($user->email);
             $message->subject('Reset Password');
             // $message->from('laravel@gmail.com', 'Laravel');

@@ -11,7 +11,6 @@ class BeritaController extends Controller
 {
     public function index()
     {
-        $this->authorize('viewAny', Berita::class);
         return response()->json([
             'message' => 'Berita list',
             'data' => Berita::with('user')->orderBy('id','desc')->get(),

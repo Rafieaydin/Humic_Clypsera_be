@@ -18,6 +18,7 @@ class permohonan extends Model
         'alasan_permohonan',
         'operasi_id',
         'scope',
+        'user_id',
     ];
 
     public function kategori()

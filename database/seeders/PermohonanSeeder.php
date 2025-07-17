@@ -30,6 +30,7 @@ class PermohonanSeeder extends Seeder
                     'alasan_permohonan' => 'Permohonan untuk mendapatkan KTP baru.',
                     'kategori_id' => $faker->randomElement([1, 2, 3]),
                     'scope' => 'sendiri',
+                    'user_id' => $faker->numberBetween(1, 10), // Assuming user IDs are between 1 and 10
                 ],
             ]);
         }
@@ -48,6 +49,7 @@ class PermohonanSeeder extends Seeder
                     'alasan_permohonan' => 'Permohonan untukmendapatkan KTP baru.',
                     'kategori_id' => $faker->randomElement([1, 2, 3]),
                     'scope' => 'semua',
+                    'user_id' => $faker->numberBetween(1, 10), // Assuming user IDs are between 1 and 10
                 ],
             ]);
         }

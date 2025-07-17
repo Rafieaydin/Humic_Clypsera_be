@@ -7,7 +7,7 @@ use App\Policies\BeritaPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
-
+use Illuminate\Support\Facades\View;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -30,6 +30,6 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::policy(Berita::class, policy: BeritaPolicy::class);
 
-
+        View::addNamespace('errors', resource_path('views/errors'));
     }
 }

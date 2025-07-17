@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/auth/reset_password/{token}', function ($token) {
     $email = FacadesDB::table('password_reset_tokens')->where('token', $token)->first();
+    if(!$email) {
+        return view('errors.404');
+    }
     return view('emails.forget_password', ['token' => $token, 'email' => $email->email]);
 })->name('password.reset');
 

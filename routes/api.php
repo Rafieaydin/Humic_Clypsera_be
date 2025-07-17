@@ -30,6 +30,12 @@ Route::get('/export/{token}', [ZipController::class, 'exportDataPeromohonCSV'])
     ->name('export.data.peromohon')
     ->where('token', '[a-zA-Z0-9-]+')->middleware('cors');
 
+
+Route::prefix('page')->group(function(){
+    Route::get('/berita', [BeritaController::class, 'index']);
+    Route::get('/berita/{id}', [BeritaController::class, 'show']);
+})->middleware('cors');
+
 Route::middleware(['auth:api','cors'])->group(function () {
 
     Route::get('/chart', [ChartController::class, 'dashhart']);
@@ -38,11 +44,7 @@ Route::middleware(['auth:api','cors'])->group(function () {
     Route::post('/auth/refresh', [authController::class, 'refresh']);
     Route::post('/auth/logout', [authController::class, 'logout']);
 
-
-
     Route::prefix('page')->group(function(){
-        Route::get('/berita', [BeritaController::class, 'index']);
-        Route::get('/berita/{id}', [BeritaController::class, 'show']);
         Route::post('/berita', [BeritaController::class, 'store']);
         Route::patch('/berita/{id}', [BeritaController::class, 'update']);
         Route::delete('/berita/{id}', [BeritaController::class, 'destroy']);
