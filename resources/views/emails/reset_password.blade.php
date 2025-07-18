@@ -125,7 +125,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('images/reset_password/LOGO.svg') }}" alt="Clypsera Logo" />
+            <img src="{{ $message->embed(public_path('images/reset_password/LOGO.png')) }}" alt="Clypsera Logo" />
         </div>
 
         <div class="content">

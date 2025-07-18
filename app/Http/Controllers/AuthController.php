@@ -210,16 +210,9 @@ class authController extends Controller
         if($eksternal_url && $app_url != $eksternal_url){
             $app_url  = $eksternal_url . '/auth/reset_password?email=' . $user->email . '&token=' . $token;
         }
+        $base64GoogleLogo = base64_encode(file_get_contents(public_path('images/reset_password/LOGO.svg')));
 
-
-
-        // Mail::send('emails.forgot_password', ['url' => $url], function ($message) use ($user) {
-        //     $message->to($user->email);
-        //     $message->subject('Reset Password');
-        //     $message->from('laravel@gmail.com', 'Laravel');
-        // });
-
-        Mail::send('emails.reset_password', ['token' => $token, 'url' => $reset_url], function ($message) use ($user) {
+        Mail::send('emails.reset_password', ['token' => $token, 'url' => $reset_url, 'base64GoogleLogo' => $base64GoogleLogo], function ($message) use ($user) {
             $message->to($user->email);
             $message->subject('Reset Password');
             // $message->from('laravel@gmail.com', 'Laravel');
